@@ -1,0 +1,61 @@
+{
+  "name": "library-management",
+  "version": "1.0.0",
+  "description": "Desktop Library Management System",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run electron\"",
+    "server": "cd backend && nodemon server.js",
+    "electron": "electron .",
+    "dev": "concurrently \"npm run server\" \"npm run electron\"",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "library",
+    "management",
+    "electron",
+    "desktop"
+  ],
+  "author": "Library Management System",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "exceljs": "^4.4.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "mongoose-sequence": "^6.0.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4",
+    "nodemon": "^3.0.1"
+  },
+  "build": {
+    "appId": "com.library.management",
+    "productName": "Library Management",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!backend/node_modules/**/*",
+      "!node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
