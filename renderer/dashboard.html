@@ -194,20 +194,20 @@
             // Remove active class from all items
             document.querySelectorAll('.sidebar-item').forEach(item => {
                 item.classList.remove('active');
-                item.classList.remove('bg-emerald-600', 'text-white', 'bg-emerald-100');
+                item.classList.remove('text-emerald-600',);
             });
 
             // Add active class to clicked element or find current
             if (activeElement) {
                 activeElement.classList.add('active');
-                activeElement.classList.add('bg-emerald-600', 'text-white', 'bg-emerald-100');
+                activeElement.classList.add('text-emerald-600');
             } else {
                 // Find based on current page
                 const currentPage = getCurrentPage();
                 const currentLink = document.querySelector(`[data-page="${currentPage}"]`);
                 if (currentLink) {
                     currentLink.classList.add('active');
-                    currentLink.classList.add('bg-emerald-100');
+                    currentLink.classList.add('text-emerald-600');
                 }
             }
         }
@@ -388,7 +388,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Welcome back!</h1>
-                    <p class="text-slate-600 mt-2">Here's what's happening with your library today.</p>
+                    <p class="text-slate-600 mt-1">Library Dashboard.</p>
                 </div>
                 <div class="mt-4 md:mt-0">
                     <div class="text-sm text-slate-500">Current Date</div>
@@ -399,57 +399,64 @@
             <!-- Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Total Books -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
+                <div class="group cursor-pointer bg-white rounded-xl relative overflow-hidden  border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-slate-500 mb-1">Total Books</p>
                             <h3 class="text-3xl font-bold text-slate-800" id="totalBooks">${stats.books.toLocaleString()}</h3>
                             <p class="text-sm text-slate-500 mt-2">Available: <span id="availableBooks">Loading...</span></p>
                         </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-book text-blue-600 text-xl"></i>
+
+                        <div class="absolute w-48 h-48 -right-20 -top-20 rounded-full bg-gradient-to-r from-indigo-50 to-indigo-100 
+                        group-hover:from-indigo-400 group-hover:to-indigo-500 transition ease-in duration-300  flex items-center ">
+                            <i class="fas fa-book text-indigo-500 text-2xl  pl-12 pt-16 z-100 group-hover:text-white  transition ease-in duration-300"></i>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Total Students -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
+                <div class="group cursor-pointer bg-white relative overflow-hidden rounded-xl  border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-slate-500 mb-1">Total Students</p>
                             <h3 class="text-3xl font-bold text-slate-800" id="totalStudents">${stats.students.toLocaleString()}</h3>
                             <p class="text-sm text-slate-500 mt-2">Active: <span id="activeStudents">Loading...</span></p>
                         </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-users text-green-600 text-xl"></i>
+                      
+                        <div class="absolute w-48 h-48 -right-20 -top-20 rounded-full bg-gradient-to-r from-emerald-50 to-emerald-100 
+                        group-hover:from-emerald-400 group-hover:to-emerald-500 transition ease-in duration-300  flex items-center ">
+                            <i class="fas fa-users text-emerald-500 text-2xl  pl-12 pt-16 z-100 group-hover:text-white  transition ease-in duration-300"></i>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Issued Books -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
+                <div class="bg-white cursor-pointer group relative rounded-xl overflow-hidden  border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-slate-500 mb-1">Issued Books</p>
                             <h3 class="text-3xl font-bold text-slate-800" id="issuedBooks">${stats.issuedBooks.toLocaleString()}</h3>
                             <p class="text-sm text-slate-500 mt-2">Overdue: <span id="overdueBooks">${stats.overdueBooks.toLocaleString()}</span></p>
                         </div>
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-exchange-alt text-purple-600 text-xl"></i>
+                         <div class="absolute w-48 h-48 -right-20 -top-20 rounded-full bg-gradient-to-r from-purple-50 to-purple-100 
+                        group-hover:from-purple-400 group-hover:to-purple-500 transition ease-in duration-300  flex items-center ">
+                            <i class="fas fa-exchange-alt text-purple-500 text-2xl  pl-12 pt-16 z-100 group-hover:text-white  transition ease-in duration-300"></i>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Total Invoices -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
+                <div class="bg-white cursor-pointer group relative rounded-xl overflow-hidden border border-slate-200 p-6 hover:shadow-md transition-shadow duration-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-slate-500 mb-1">Total Invoices</p>
                             <h3 class="text-3xl font-bold text-slate-800" id="totalInvoices">${stats.invoices.toLocaleString()}</h3>
                             <p class="text-sm text-slate-500 mt-2">Revenue: ₹<span id="totalRevenue">${stats.totalRevenue.toLocaleString('en-IN')}</span></p>
                         </div>
-                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-file-invoice-dollar text-orange-600 text-xl"></i>
+                      
+                         <div class="absolute w-48 h-48 -right-20 -top-20 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 
+                        group-hover:from-amber-400 group-hover:to-amber-500 transition ease-in duration-300  flex items-center ">
+                            <i class="fas fa-file-invoice-dollar text-amber-500 text-2xl  pl-12 pt-16 z-100 group-hover:text-white  transition ease-in duration-300"></i>
                         </div>
                     </div>
                 </div>
@@ -458,7 +465,7 @@
             <!-- Two Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Recent Issues -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+                <div class="bg-white rounded-xl  border border-slate-200">
                     <div class="p-6 border-b border-slate-200">
                         <div class="flex items-center justify-between">
                             <h2 class="text-xl font-bold text-slate-800">Recent Issues</h2>
@@ -478,7 +485,7 @@
                 </div>
                 
                 <!-- Overdue Books -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+                <div class="bg-white rounded-xl  border border-slate-200">
                     <div class="p-6 border-b border-slate-200">
                         <div class="flex items-center justify-between">
                             <h2 class="text-xl font-bold text-slate-800">Overdue Books</h2>
@@ -505,7 +512,7 @@
                 </div>
                 
                 <!-- Recent Students -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+                <div class="bg-white rounded-xl  border border-slate-200">
                     <div class="p-6 border-b border-slate-200">
                         <div class="flex items-center justify-between">
                             <h2 class="text-xl font-bold text-slate-800">Recent Students</h2>
@@ -525,7 +532,7 @@
                 </div>
                 
                 <!-- Recent Invoices -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+                <div class="bg-white rounded-xl  border border-slate-200">
                     <div class="p-6 border-b border-slate-200">
                         <div class="flex items-center justify-between">
                             <h2 class="text-xl font-bold text-slate-800">Recent Invoices</h2>

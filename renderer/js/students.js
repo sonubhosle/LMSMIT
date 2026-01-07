@@ -21,19 +21,19 @@ class StudentsManager {
                         <p class="text-slate-600">Manage student records and track issued books</p>
                     </div>
                     <div class="flex space-x-3">
-                        <button id="exportStudentsBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-200 flex items-center space-x-2">
+                        <button id="exportStudentsBtn" class="px-4 py-2 border border-slate-200 rounded-xl text-white bg-gradient-to-r from-emerald-500 to-emerald-700 transition duration-200 flex items-center space-x-2">
                             <i class="fas fa-download"></i>
-                            <span>Export Excel</span>
+                            <span>Export</span>
                         </button>
-                        <button id="addStudentBtn" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition duration-200 flex items-center space-x-2">
+                        <button id="addStudentBtn" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:opacity-90 transition duration-200 flex items-center space-x-2">
                             <i class="fas fa-plus"></i>
-                            <span>Add Student</span>
+                            <span>Add </span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Search and Filters -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+                <div class="bg-white rounded-xl  border border-slate-200 p-4 mb-6">
                     <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
                         <div class="flex-1">
                             <div class="relative">
@@ -41,7 +41,7 @@ class StudentsManager {
                                     type="text" 
                                     id="studentSearch"
                                     placeholder="Search students by name, email, mobile, or class..."
-                                    class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                    class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-transparent transition ease-in duration-300"
                                     value="${this.searchQuery}"
                                 >
                                 <i class="fas fa-search absolute left-3 top-3 text-slate-400"></i>
@@ -59,14 +59,11 @@ class StudentsManager {
                 </div>
 
                 <!-- Students Table -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-200">
-                            <thead class="bg-slate-50">
+                            <thead class="bg-white">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                        Student ID
-                                    </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         Name
                                     </th>
@@ -262,9 +259,7 @@ class StudentsManager {
             
             html += `
                 <tr class="hover:bg-slate-50 transition duration-150" data-student-id="${student._id}">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-slate-900">${student.studentId || student._id?.slice(-6) || 'N/A'}</div>
-                    </td>
+                 
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center mr-3">
@@ -299,19 +294,19 @@ class StudentsManager {
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                         ${student.createdAt ? new Date(student.createdAt).toLocaleDateString() : 'N/A'}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap ">
                         <div class="flex items-center space-x-2">
-                            <button class="view-student-btn text-blue-600 hover:text-blue-900" data-id="${student._id}" title="View Details">
-                                <i class="fas fa-eye"></i>
+                            <button class="view-student-btn bg-blue-100 border border-blue-300 px-2.5 py-1 rounded-xl text-blue-600 hover:text-blue-900" data-id="${student._id}" title="View Details">
+                                <i class="fa-regular fa-eye text-lg"></i>
                             </button>
-                            <button class="edit-student-btn text-green-600 hover:text-green-900" data-id="${student._id}" title="Edit">
-                                <i class="fas fa-edit"></i>
+                            <button class="edit-student-btn  bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl text-emerald-600 hover:text-emerald-900" data-id="${student._id}" title="Edit">
+                                <i class='bx bx-edit text-lg'></i>
                             </button>
-                            <button class="delete-student-btn text-red-600 hover:text-red-900" data-id="${student._id}" title="Delete">
-                                <i class="fas fa-trash"></i>
+                            <button class="delete-student-btn  bg-rose-100 border border-rose-300 px-3 py-1 rounded-xl text-rose-600 hover:text-rose-700" data-id="${student._id}" title="Delete">
+                                <i class='bx bx-trash text-lg'></i>
                             </button>
-                            <button class="issue-book-btn text-purple-600 hover:text-purple-900" data-id="${student._id}" title="Issue Book">
-                                <i class="fas fa-book"></i>
+                            <button class="issue-book-btn  bg-purple-100 border border-purple-300 px-3 py-1 rounded-xl text-purple-600 hover:text-purple-900" data-id="${student._id}" title="Issue Book">
+                                <i class='bx bx-info-square text-lg'></i>
                             </button>
                         </div>
                     </td>
