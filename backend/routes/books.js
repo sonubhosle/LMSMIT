@@ -61,9 +61,9 @@ router.get('/', async (req, res) => {
         const totalBooks = await Book.countDocuments(query);
         const totalPages = Math.ceil(totalBooks / limitNum);
 
-        // Get books with pagination
+        // Get books with pagination - SORTED BY bookCounter ASCENDING
         const books = await Book.find(query)
-            .sort({ createdAt: -1 })
+            .sort({ bookCounter: 1 })  // CHANGED FROM createdAt TO bookCounter
             .skip(skip)
             .limit(limitNum);
 
@@ -83,6 +83,7 @@ router.get('/', async (req, res) => {
         });
     }
 });
+
 
 // Get single book
 router.get('/:id', async (req, res) => {

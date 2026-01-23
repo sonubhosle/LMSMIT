@@ -65,15 +65,15 @@ class InvoicesManager {
                         <p class="text-slate-600">Track and manage financial transactions</p>
                     </div>
                     <div class="flex space-x-3">
-                        <button id="exportInvoicesBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-200 flex items-center space-x-2">
+                        <button id="exportInvoicesBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-all duration-200 flex items-center space-x-2 hover:scale-[1.02] active:scale-[0.98]">
                             <i class="fas fa-download"></i>
                             <span>Export Excel</span>
                         </button>
-                        <button id="printInvoiceBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-200 flex items-center space-x-2">
+                        <button id="printInvoiceBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-all duration-200 flex items-center space-x-2 hover:scale-[1.02] active:scale-[0.98]">
                             <i class="fas fa-print"></i>
                             <span>Print Invoice</span>
                         </button>
-                        <button id="generateInvoiceBtn" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition duration-200 flex items-center space-x-2">
+                        <button id="generateInvoiceBtn" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition-all duration-200 flex items-center space-x-2 hover:scale-[1.02] active:scale-[0.98]">
                             <i class="fas fa-plus"></i>
                             <span>Generate Invoice</span>
                         </button>
@@ -83,27 +83,64 @@ class InvoicesManager {
                 <!-- Filters -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <select id="statusFilter" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="paid">Paid</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-                        </div>
-                        <div>
-                            <select id="typeFilter" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="">All Types</option>
-                                <option value="late_return">Late Return</option>
-                                <option value="lost_book">Lost Book</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button id="clearFiltersBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-200">
-                                Clear
+                        <!-- Status Filter with Custom Dropdown -->
+                        <div class="relative">
+                            <button id="statusFilterBtn" class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-all duration-200 flex justify-between items-center group dropdown-btn">
+                                <span id="statusFilterText">All Status</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200 group-hover:rotate-180"></i>
                             </button>
-                            <button id="applyFiltersBtn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-200 flex-1">
+                            <div id="statusFilterDropdown" class="custom-filter-dropdown absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50 opacity-0 scale-95 transform transition-all duration-200 ease-out origin-top pointer-events-none">
+                                <button class="status-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="">
+                                    <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+                                    <span>All Status</span>
+                                </button>
+                                <button class="status-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="pending">
+                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                    <span>Pending</span>
+                                </button>
+                                <button class="status-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="paid">
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <span>Paid</span>
+                                </button>
+                                <button class="status-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="cancelled">
+                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <span>Cancelled</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Type Filter with Custom Dropdown -->
+                        <div class="relative">
+                            <button id="typeFilterBtn" class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-all duration-200 flex justify-between items-center group dropdown-btn">
+                                <span id="typeFilterText">All Types</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200 group-hover:rotate-180"></i>
+                            </button>
+                            <div id="typeFilterDropdown" class="custom-filter-dropdown absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50 opacity-0 scale-95 transform transition-all duration-200 ease-out origin-top pointer-events-none">
+                                <button class="type-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="">
+                                    <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+                                    <span>All Types</span>
+                                </button>
+                                <button class="type-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="late_return">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <span>Late Return</span>
+                                </button>
+                                <button class="type-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="lost_book">
+                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <span>Lost Book</span>
+                                </button>
+                                <button class="type-filter-option custom-dropdown-item w-full px-4 py-2 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-2" data-value="other">
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <span>Other</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex space-x-2">
+                            <button id="clearFiltersBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                                Clear Filters
+                            </button>
+                            <button id="applyFiltersBtn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex-1">
                                 Apply Filters
                             </button>
                         </div>
@@ -214,6 +251,105 @@ class InvoicesManager {
         
         // Setup event listeners
         this.setupEventListeners();
+        this.setupFilterDropdowns();
+    }
+
+    // Setup filter dropdowns
+    setupFilterDropdowns() {
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-filter-dropdown') && !e.target.closest('.dropdown-btn')) {
+                this.closeAllFilterDropdowns();
+            }
+        });
+
+        // Status filter dropdown
+        const statusFilterBtn = document.getElementById('statusFilterBtn');
+        const statusFilterDropdown = document.getElementById('statusFilterDropdown');
+        
+        statusFilterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleFilterDropdown(statusFilterDropdown, statusFilterBtn);
+        });
+
+        // Status filter options
+        document.querySelectorAll('.status-filter-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const value = option.dataset.value;
+                const text = option.querySelector('span').textContent;
+                document.getElementById('statusFilterText').textContent = text;
+                this.statusFilter = value;
+                this.closeAllFilterDropdowns();
+                
+                // Update button icon
+                const icon = statusFilterBtn.querySelector('i');
+                icon.classList.remove('rotate-180');
+            });
+        });
+
+        // Type filter dropdown
+        const typeFilterBtn = document.getElementById('typeFilterBtn');
+        const typeFilterDropdown = document.getElementById('typeFilterDropdown');
+        
+        typeFilterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleFilterDropdown(typeFilterDropdown, typeFilterBtn);
+        });
+
+        // Type filter options
+        document.querySelectorAll('.type-filter-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const value = option.dataset.value;
+                const text = option.querySelector('span').textContent;
+                document.getElementById('typeFilterText').textContent = text;
+                this.typeFilter = value;
+                this.closeAllFilterDropdowns();
+                
+                // Update button icon
+                const icon = typeFilterBtn.querySelector('i');
+                icon.classList.remove('rotate-180');
+            });
+        });
+
+        // Close dropdowns when pressing Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAllFilterDropdowns();
+            }
+        });
+    }
+
+    // Toggle filter dropdown
+    toggleFilterDropdown(dropdown, button) {
+        const isVisible = !dropdown.classList.contains('opacity-0');
+        
+        // Close all dropdowns first
+        this.closeAllFilterDropdowns();
+        
+        if (!isVisible) {
+            // Show dropdown with animation
+            dropdown.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+            dropdown.classList.add('opacity-100', 'scale-100');
+            
+            // Update button icon
+            const icon = button.querySelector('i');
+            icon.classList.add('rotate-180');
+        }
+    }
+
+    // Close all filter dropdowns
+    closeAllFilterDropdowns() {
+        document.querySelectorAll('.custom-filter-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('opacity-100', 'scale-100');
+            dropdown.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        });
+        
+        // Reset button icons
+        document.querySelectorAll('.dropdown-btn i').forEach(icon => {
+            icon.classList.remove('rotate-180');
+        });
     }
 
     // Load invoices data
@@ -260,7 +396,7 @@ class InvoicesManager {
                             <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
                             <p class="text-slate-700 text-lg font-medium mb-2">Failed to load invoices</p>
                             <p class="text-slate-600 mb-4">${error.message || 'Please try again'}</p>
-                            <button onclick="invoicesManager.loadInvoices()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-200">
+                            <button onclick="invoicesManager.loadInvoices()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
                                 <i class="fas fa-redo mr-2"></i>Retry
                             </button>
                         </div>
@@ -308,7 +444,7 @@ class InvoicesManager {
                             <p class="text-slate-600 text-lg font-medium mb-2">No invoices found</p>
                             <p class="text-slate-500">${this.statusFilter || this.typeFilter ? 'Try different filters' : 'Generate your first invoice'}</p>
                             ${!this.statusFilter && !this.typeFilter ? `
-                                <button id="generateFirstInvoiceBtn" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-200">
+                                <button id="generateFirstInvoiceBtn" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
                                     <i class="fas fa-plus mr-2"></i>Generate Invoice
                                 </button>
                             ` : ''}
@@ -327,7 +463,7 @@ class InvoicesManager {
         }
 
         let html = '';
-        invoices.forEach(invoice => {
+        invoices.forEach((invoice, index) => {
             const statusColors = {
                 'pending': 'bg-yellow-100 text-yellow-800',
                 'paid': 'bg-green-100 text-green-800',
@@ -347,7 +483,7 @@ class InvoicesManager {
             const createdAt = invoice.createdAt ? new Date(invoice.createdAt).toLocaleDateString() : '';
             
             html += `
-                <tr class="hover:bg-slate-50 transition duration-150" data-invoice-id="${invoice._id}">
+                <tr class="hover:bg-slate-50 transition-all duration-150 animate-fade-in-up" style="animation-delay: ${index * 0.05}s" data-invoice-id="${invoice._id}">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-slate-900">#${invoice.invoiceId || invoice._id}</div>
                     </td>
@@ -386,17 +522,28 @@ class InvoicesManager {
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div class="flex items-center space-x-2">
-                            <button class="view-invoice-btn text-blue-600 hover:text-blue-900" data-id="${invoice._id}" title="View Invoice">
+                            <button class="view-invoice-btn p-1.5 rounded-lg text-blue-600 hover:text-blue-900 hover:bg-blue-50 transition-all duration-150 transform hover:scale-110" 
+                                    data-id="${invoice._id}" 
+                                    title="View Invoice">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="print-invoice-btn text-purple-600 hover:text-purple-900" data-id="${invoice._id}" title="Print">
+                            <button class="print-invoice-btn p-1.5 rounded-lg text-purple-600 hover:text-purple-900 hover:bg-purple-50 transition-all duration-150 transform hover:scale-110" 
+                                    data-id="${invoice._id}" 
+                                    title="Print">
                                 <i class="fas fa-print"></i>
                             </button>
                             ${invoice.status === 'pending' ? `
-                                <button class="mark-paid-btn text-green-600 hover:text-green-900" data-id="${invoice._id}" title="Mark as Paid">
+                                <button class="mark-paid-btn p-1.5 rounded-lg text-green-600 hover:text-green-900 hover:bg-green-50 transition-all duration-150 transform hover:scale-110" 
+                                        data-id="${invoice._id}" 
+                                        title="Mark as Paid">
                                     <i class="fas fa-check-circle"></i>
                                 </button>
                             ` : ''}
+                            <button class="delete-invoice-btn p-1.5 rounded-lg text-red-600 hover:text-red-900 hover:bg-red-50 transition-all duration-150 transform hover:scale-110" 
+                                    data-id="${invoice._id}" 
+                                    title="Delete Invoice">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -407,120 +554,6 @@ class InvoicesManager {
         
         // Add event listeners to action buttons
         this.setupTableEventListeners();
-    }
-
-    // Render pagination
-    renderPagination() {
-        const container = document.getElementById('paginationContainer');
-        if (!container) return;
-
-        const startItem = ((this.currentPage - 1) * this.limit) + 1;
-        const endItem = Math.min(this.currentPage * this.limit, this.totalRecords);
-        
-        let html = `
-            <div class="flex items-center justify-between">
-                <div class="flex-1 flex justify-between sm:hidden">
-                    <button onclick="invoicesManager.previousPage()" ${this.currentPage === 1 ? 'disabled' : ''} 
-                        class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md ${this.currentPage === 1 ? 'text-slate-400 bg-slate-50' : 'text-slate-700 bg-white hover:bg-slate-50'}">
-                        Previous
-                    </button>
-                    <button onclick="invoicesManager.nextPage()" ${this.currentPage === this.totalPages ? 'disabled' : ''}
-                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md ${this.currentPage === this.totalPages ? 'text-slate-400 bg-slate-50' : 'text-slate-700 bg-white hover:bg-slate-50'}">
-                        Next
-                    </button>
-                </div>
-                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-sm text-slate-700">
-                            Showing <span class="font-medium">${startItem}</span> to 
-                            <span class="font-medium">${endItem}</span> of
-                            <span class="font-medium">${this.totalRecords}</span> invoices
-                        </p>
-                    </div>
-                    <div>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-        `;
-
-        // Previous button
-        html += `
-            <button onclick="invoicesManager.previousPage()" ${this.currentPage === 1 ? 'disabled' : ''}
-                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium ${this.currentPage === 1 ? 'text-slate-300' : 'text-slate-500 hover:bg-slate-50'}">
-                <span class="sr-only">Previous</span>
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        `;
-
-        // Page numbers
-        const maxVisiblePages = 5;
-        let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-        
-        if (endPage - startPage + 1 < maxVisiblePages) {
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            html += `
-                <button onclick="invoicesManager.goToPage(${i})"
-                    class="relative inline-flex items-center px-4 py-2 border border-slate-300 bg-white text-sm font-medium ${i === this.currentPage ? 'z-10 bg-purple-50 border-purple-500 text-purple-600' : 'text-slate-500 hover:bg-slate-50'}">
-                    ${i}
-                </button>
-            `;
-        }
-
-        // Next button
-        html += `
-            <button onclick="invoicesManager.nextPage()" ${this.currentPage === this.totalPages ? 'disabled' : ''}
-                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-300 bg-white text-sm font-medium ${this.currentPage === this.totalPages ? 'text-slate-300' : 'text-slate-500 hover:bg-slate-50'}">
-                <span class="sr-only">Next</span>
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        `;
-
-        html += `
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        container.innerHTML = html;
-    }
-
-    // Setup event listeners
-    setupEventListeners() {
-        // Apply filters button
-        document.getElementById('applyFiltersBtn')?.addEventListener('click', () => {
-            this.statusFilter = document.getElementById('statusFilter').value;
-            this.typeFilter = document.getElementById('typeFilter').value;
-            this.currentPage = 1;
-            this.loadInvoices();
-        });
-
-        // Clear filters button
-        document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
-            this.statusFilter = '';
-            this.typeFilter = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('typeFilter').value = '';
-            this.currentPage = 1;
-            this.loadInvoices();
-        });
-
-        // Generate invoice button
-        document.getElementById('generateInvoiceBtn')?.addEventListener('click', () => {
-            this.showGenerateInvoiceModal();
-        });
-
-        // Export invoices button
-        document.getElementById('exportInvoicesBtn')?.addEventListener('click', () => {
-            this.exportInvoicesToExcel();
-        });
-
-        // Print invoice button
-        document.getElementById('printInvoiceBtn')?.addEventListener('click', () => {
-            this.printAllInvoices();
-        });
     }
 
     // Setup table event listeners
@@ -548,31 +581,53 @@ class InvoicesManager {
                 this.showMarkAsPaidModal(invoiceId);
             });
         });
+
+        // Delete invoice
+        document.querySelectorAll('.delete-invoice-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const invoiceId = e.currentTarget.dataset.id;
+                this.showDeleteInvoiceModal(invoiceId);
+            });
+        });
     }
 
-    // Pagination methods
-    previousPage() {
-        if (this.currentPage > 1) {
-            this.currentPage--;
+    // Setup event listeners
+    setupEventListeners() {
+        // Apply filters button
+        document.getElementById('applyFiltersBtn')?.addEventListener('click', () => {
+            this.currentPage = 1;
             this.loadInvoices();
-        }
-    }
+            this.showSuccess('Filters applied successfully!');
+        });
 
-    nextPage() {
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++;
+        // Clear filters button
+        document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+            this.statusFilter = '';
+            this.typeFilter = '';
+            document.getElementById('statusFilterText').textContent = 'All Status';
+            document.getElementById('typeFilterText').textContent = 'All Types';
+            this.currentPage = 1;
             this.loadInvoices();
-        }
+            this.showSuccess('Filters cleared successfully!');
+        });
+
+        // Generate invoice button
+        document.getElementById('generateInvoiceBtn')?.addEventListener('click', () => {
+            this.showGenerateInvoiceModal();
+        });
+
+        // Export invoices button
+        document.getElementById('exportInvoicesBtn')?.addEventListener('click', () => {
+            this.exportInvoicesToExcel();
+        });
+
+        // Print invoice button
+        document.getElementById('printInvoiceBtn')?.addEventListener('click', () => {
+            this.printAllInvoices();
+        });
     }
 
-    goToPage(page) {
-        if (page >= 1 && page <= this.totalPages) {
-            this.currentPage = page;
-            this.loadInvoices();
-        }
-    }
-
-    // Show generate invoice modal
+    // Show generate invoice modal with custom dropdowns
     showGenerateInvoiceModal() {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
@@ -588,80 +643,140 @@ class InvoicesManager {
                     
                     <form id="generateInvoiceForm" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Student Selection -->
+                            <!-- Student Selection with Custom Dropdown -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Select Student *</label>
                                 <div class="relative">
-                                    <select id="invoiceStudentId" required
-                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none">
-                                        <option value="">Select a student</option>
-                                        <!-- Options will be loaded dynamically -->
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                        <i class="fas fa-chevron-down text-slate-400"></i>
+                                    <div id="invoiceStudentDropdown" class="custom-invoice-dropdown w-full">
+                                        <button type="button" id="invoiceStudentBtn" class="dropdown-select-btn w-full px-4 py-2 border border-slate-300 rounded-lg text-left bg-white hover:bg-slate-50 transition-all duration-200 flex justify-between items-center">
+                                            <span id="invoiceStudentText" class="text-slate-500">Select a student</span>
+                                            <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                        </button>
+                                        <div id="invoiceStudentOptions" class="custom-dropdown-options absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50 opacity-0 scale-95 transform transition-all duration-200 ease-out origin-top pointer-events-none max-h-60 overflow-y-auto">
+                                            <div class="px-3 py-2 border-b border-slate-100">
+                                                <input type="text" id="studentSearchInput" placeholder="Search students..." class="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                            </div>
+                                            <div id="studentOptionsList" class="py-1">
+                                                <!-- Options will be loaded dynamically -->
+                                                <div class="px-4 py-2 text-center text-slate-500">
+                                                    <i class="fas fa-spinner fa-spin mr-2"></i> Loading students...
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <input type="hidden" id="invoiceStudentId" required>
                                 </div>
                                 <div id="invoiceStudentInfo" class="mt-3 p-3 bg-slate-50 rounded-lg hidden">
                                     <!-- Student info will be shown here -->
                                 </div>
                             </div>
                             
-                            <!-- Invoice Type -->
+                            <!-- Invoice Type with Custom Dropdown -->
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Invoice Type *</label>
-                                <select id="invoiceType" required
-                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <option value="">Select type</option>
-                                    <option value="late_return">Late Return Penalty</option>
-                                    <option value="lost_book">Lost Book</option>
-                                    <option value="other">Other</option>
-                                </select>
+                                <div class="relative">
+                                    <div id="invoiceTypeDropdown" class="custom-invoice-dropdown w-full">
+                                        <button type="button" id="invoiceTypeBtn" class="dropdown-select-btn w-full px-4 py-2 border border-slate-300 rounded-lg text-left bg-white hover:bg-slate-50 transition-all duration-200 flex justify-between items-center">
+                                            <span id="invoiceTypeText" class="text-slate-500">Select type</span>
+                                            <i class="fas fa-chevron-down text-slate-400 text-xs transition-transform duration-200"></i>
+                                        </button>
+                                        <div id="invoiceTypeOptions" class="custom-dropdown-options absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50 opacity-0 scale-95 transform transition-all duration-200 ease-out origin-top pointer-events-none">
+                                            <button type="button" class="invoice-type-option custom-dropdown-item w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-3" data-value="">
+                                                <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-question text-slate-500"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate-700">Select type</div>
+                                                    <div class="text-xs text-slate-500">Choose an invoice type</div>
+                                                </div>
+                                            </button>
+                                            <button type="button" class="invoice-type-option custom-dropdown-item w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-3" data-value="late_return">
+                                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-clock text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate-700">Late Return Penalty</div>
+                                                    <div class="text-xs text-slate-500">For overdue book returns</div>
+                                                </div>
+                                            </button>
+                                            <button type="button" class="invoice-type-option custom-dropdown-item w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-3" data-value="lost_book">
+                                                <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-book-dead text-red-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate-700">Lost Book</div>
+                                                    <div class="text-xs text-slate-500">For lost or damaged books</div>
+                                                </div>
+                                            </button>
+                                            <button type="button" class="invoice-type-option custom-dropdown-item w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-3" data-value="other">
+                                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-receipt text-green-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate-700">Other Charges</div>
+                                                    <div class="text-xs text-slate-500">Miscellaneous charges</div>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="invoiceType" required>
+                                </div>
                             </div>
                         </div>
                         
                         <!-- Dynamic Fields Based on Type -->
                         <div id="invoiceFields">
-                            <p class="text-slate-500 text-center py-4">Select an invoice type to continue</p>
+                            <div class="text-center py-8">
+                                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-file-invoice text-slate-400 text-2xl"></i>
+                                </div>
+                                <p class="text-slate-500 font-medium">Select an invoice type to continue</p>
+                                <p class="text-slate-400 text-sm mt-1">Choose a type above to see relevant fields</p>
+                            </div>
                         </div>
                         
                         <!-- Remarks -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Remarks</label>
                             <textarea id="invoiceRemarks" rows="2"
-                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                                 placeholder="Additional notes or description..."></textarea>
                         </div>
                         
                         <!-- Invoice Summary -->
-                        <div class="p-4 bg-blue-50 rounded-lg">
-                            <h4 class="font-medium text-blue-800 mb-3">Invoice Summary</h4>
+                        <div class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+                            <h4 class="font-medium text-blue-800 mb-3 flex items-center">
+                                <i class="fas fa-file-alt mr-2"></i>
+                                Invoice Summary
+                            </h4>
                             <div class="space-y-2">
-                                <div class="flex justify-between">
+                                <div class="flex justify-between items-center">
                                     <span class="text-blue-700">Student:</span>
-                                    <span id="summaryInvoiceStudent" class="font-medium">Not selected</span>
+                                    <span id="summaryInvoiceStudent" class="font-medium text-slate-800">Not selected</span>
                                 </div>
-                                <div class="flex justify-between">
+                                <div class="flex justify-between items-center">
                                     <span class="text-blue-700">Type:</span>
-                                    <span id="summaryInvoiceType" class="font-medium">Not selected</span>
+                                    <span id="summaryInvoiceType" class="font-medium text-slate-800">Not selected</span>
                                 </div>
-                                <div id="summaryDetails" class="space-y-1">
+                                <div id="summaryDetails" class="space-y-1 pt-2 border-t border-blue-100">
                                     <!-- Dynamic details will be shown here -->
                                 </div>
-                                <div class="flex justify-between border-t border-blue-200 pt-2 mt-2">
+                                <div class="flex justify-between items-center border-t border-blue-200 pt-2 mt-2">
                                     <span class="font-medium text-blue-800">Total Amount:</span>
-                                    <span id="summaryTotalAmount" class="font-bold text-blue-800">₹0.00</span>
+                                    <span id="summaryTotalAmount" class="text-xl font-bold text-blue-800">₹0.00</span>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="flex space-x-3 pt-4">
                             <button type="button" onclick="this.closest('.fixed').remove()"
-                                class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition duration-200">
+                                class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
                                 Cancel
                             </button>
                             <button type="submit" id="generateInvoiceSubmitBtn"
-                                class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition duration-200">
-                                Generate Invoice
+                                class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2">
+                                <i class="fas fa-plus"></i>
+                                <span>Generate Invoice</span>
                             </button>
                         </div>
                     </form>
@@ -671,26 +786,12 @@ class InvoicesManager {
 
         document.body.appendChild(modal);
 
-        // Load students
-        this.loadStudentsForInvoice();
+        // Load students for custom dropdown
+        this.loadStudentsForInvoiceDropdown();
         
-        // Handle type change
-        document.getElementById('invoiceType')?.addEventListener('change', (e) => {
-            this.loadInvoiceFields(e.target.value);
-        });
-
-        // Handle student change
-        document.getElementById('invoiceStudentId')?.addEventListener('change', (e) => {
-            if (e.target.value) {
-                this.loadInvoiceStudentInfo(e.target.value);
-            } else {
-                const infoDiv = document.getElementById('invoiceStudentInfo');
-                if (infoDiv) infoDiv.classList.add('hidden');
-                const summaryStudent = document.getElementById('summaryInvoiceStudent');
-                if (summaryStudent) summaryStudent.textContent = 'Not selected';
-            }
-        });
-
+        // Setup custom dropdown functionality
+        this.setupCustomDropdowns();
+        
         // Handle form submission
         modal.querySelector('#generateInvoiceForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -698,30 +799,244 @@ class InvoicesManager {
         });
     }
 
-    // Load students for invoice dropdown
-    async loadStudentsForInvoice() {
+    // Load students for custom dropdown
+    async loadStudentsForInvoiceDropdown() {
         try {
             const response = await this.fetch('http://localhost:5000/api/students?limit=100');
             if (response.ok) {
                 const data = await response.json();
-                const select = document.getElementById('invoiceStudentId');
-                if (!select) return;
+                const optionsList = document.getElementById('studentOptionsList');
                 
-                select.innerHTML = '<option value="">Select a student</option>';
+                if (!optionsList || data.students.length === 0) return;
+                
+                let html = '';
                 data.students.forEach(student => {
-                    const option = document.createElement('option');
-                    option.value = student._id;
-                    option.textContent = `${student.name} (ID: ${student.studentId}) - ${student.className}`;
-                    select.appendChild(option);
+                    html += `
+                        <button type="button" class="student-option custom-dropdown-item w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 transition-all duration-150 flex items-center space-x-3" data-id="${student._id}" data-name="${student.name}" data-studentid="${student.studentId}" data-class="${student.className}">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-medium text-slate-700 truncate">${student.name}</div>
+                                <div class="text-xs text-slate-500 truncate">ID: ${student.studentId} | ${student.className}</div>
+                            </div>
+                        </button>
+                    `;
                 });
+                
+                optionsList.innerHTML = html;
+                
+                // Setup search functionality
+                this.setupStudentSearch();
             }
         } catch (error) {
             console.error('Error loading students:', error);
+            const optionsList = document.getElementById('studentOptionsList');
+            if (optionsList) {
+                optionsList.innerHTML = `
+                    <div class="px-4 py-3 text-center">
+                        <i class="fas fa-exclamation-triangle text-yellow-500 mb-2"></i>
+                        <p class="text-sm text-slate-600">Failed to load students</p>
+                        <button onclick="invoicesManager.loadStudentsForInvoiceDropdown()" class="mt-2 px-3 py-1 text-xs bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
         }
     }
 
-    // Load invoice student info
-    async loadInvoiceStudentInfo(studentId) {
+    // Setup custom dropdowns functionality
+    setupCustomDropdowns() {
+        // Close all dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-invoice-dropdown')) {
+                this.closeAllInvoiceDropdowns();
+            }
+        });
+
+        // Student dropdown
+        const studentBtn = document.getElementById('invoiceStudentBtn');
+        const studentOptions = document.getElementById('invoiceStudentOptions');
+        
+        if (studentBtn && studentOptions) {
+            studentBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleInvoiceDropdown(studentOptions, studentBtn);
+            });
+        }
+
+        // Student option selection
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.student-option')) {
+                e.stopPropagation();
+                const option = e.target.closest('.student-option');
+                const studentId = option.dataset.id;
+                const studentName = option.dataset.name;
+                const studentIdNumber = option.dataset.studentid;
+                const className = option.dataset.class;
+                
+                // Update UI
+                const studentText = document.getElementById('invoiceStudentText');
+                if (studentText) {
+                    studentText.textContent = `${studentName} (ID: ${studentIdNumber})`;
+                    studentText.classList.remove('text-slate-500');
+                    studentText.classList.add('text-slate-800');
+                }
+                
+                const studentIdInput = document.getElementById('invoiceStudentId');
+                if (studentIdInput) studentIdInput.value = studentId;
+                
+                const summaryStudent = document.getElementById('summaryInvoiceStudent');
+                if (summaryStudent) summaryStudent.textContent = `${studentName} (ID: ${studentIdNumber})`;
+                
+                // Show student info
+                this.showInvoiceStudentInfo(studentId);
+                
+                // Close dropdown
+                this.closeAllInvoiceDropdowns();
+            }
+        });
+
+        // Type dropdown
+        const typeBtn = document.getElementById('invoiceTypeBtn');
+        const typeOptions = document.getElementById('invoiceTypeOptions');
+        
+        if (typeBtn && typeOptions) {
+            typeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleInvoiceDropdown(typeOptions, typeBtn);
+            });
+        }
+
+        // Type option selection
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.invoice-type-option')) {
+                e.stopPropagation();
+                const option = e.target.closest('.invoice-type-option');
+                const typeValue = option.dataset.value;
+                
+                if (!typeValue) {
+                    const typeText = document.getElementById('invoiceTypeText');
+                    if (typeText) {
+                        typeText.textContent = 'Select type';
+                        typeText.classList.add('text-slate-500');
+                        typeText.classList.remove('text-slate-800');
+                    }
+                    
+                    const typeInput = document.getElementById('invoiceType');
+                    if (typeInput) typeInput.value = '';
+                    
+                    const summaryType = document.getElementById('summaryInvoiceType');
+                    if (summaryType) summaryType.textContent = 'Not selected';
+                    
+                    this.loadInvoiceFields('');
+                } else {
+                    // Update UI based on selected type
+                    const typeDisplay = {
+                        'late_return': 'Late Return Penalty',
+                        'lost_book': 'Lost Book',
+                        'other': 'Other Charges'
+                    };
+                    
+                    const typeText = document.getElementById('invoiceTypeText');
+                    if (typeText) {
+                        typeText.textContent = typeDisplay[typeValue];
+                        typeText.classList.remove('text-slate-500');
+                        typeText.classList.add('text-slate-800');
+                    }
+                    
+                    const typeInput = document.getElementById('invoiceType');
+                    if (typeInput) typeInput.value = typeValue;
+                    
+                    const summaryType = document.getElementById('summaryInvoiceType');
+                    if (summaryType) summaryType.textContent = typeDisplay[typeValue];
+                    
+                    this.loadInvoiceFields(typeValue);
+                }
+                
+                // Close dropdown
+                this.closeAllInvoiceDropdowns();
+            }
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAllInvoiceDropdowns();
+            }
+        });
+    }
+
+    // Setup student search functionality
+    setupStudentSearch() {
+        const searchInput = document.getElementById('studentSearchInput');
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const options = document.querySelectorAll('.student-option');
+            
+            options.forEach(option => {
+                const studentName = option.dataset.name.toLowerCase();
+                const studentId = option.dataset.studentid.toLowerCase();
+                const className = option.dataset.class.toLowerCase();
+                
+                if (studentName.includes(searchTerm) || studentId.includes(searchTerm) || className.includes(searchTerm)) {
+                    option.style.display = 'flex';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+
+        // Prevent search input click from closing dropdown
+        searchInput.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+
+    // Toggle invoice dropdown
+    toggleInvoiceDropdown(dropdown, button) {
+        const isVisible = !dropdown.classList.contains('opacity-0');
+        
+        // Close all dropdowns first
+        this.closeAllInvoiceDropdowns();
+        
+        if (!isVisible) {
+            // Show dropdown with animation
+            dropdown.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+            dropdown.classList.add('opacity-100', 'scale-100');
+            
+            // Update button icon
+            const icon = button.querySelector('i');
+            if (icon) {
+                icon.classList.add('rotate-180');
+            }
+            
+            // Focus search input if it exists
+            const searchInput = dropdown.querySelector('input');
+            if (searchInput) {
+                setTimeout(() => searchInput.focus(), 100);
+            }
+        }
+    }
+
+    // Close all invoice dropdowns
+    closeAllInvoiceDropdowns() {
+        document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+            dropdown.classList.remove('opacity-100', 'scale-100');
+            dropdown.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        });
+        
+        // Reset button icons
+        document.querySelectorAll('.dropdown-select-btn i').forEach(icon => {
+            icon.classList.remove('rotate-180');
+        });
+    }
+
+    // Show invoice student info
+    async showInvoiceStudentInfo(studentId) {
         try {
             const response = await this.fetch(`http://localhost:5000/api/students/${studentId}`);
             if (response.ok) {
@@ -729,25 +1044,22 @@ class InvoicesManager {
                 const student = data.student;
                 
                 const infoDiv = document.getElementById('invoiceStudentInfo');
-                const summaryStudent = document.getElementById('summaryInvoiceStudent');
-                
                 if (infoDiv) {
                     infoDiv.innerHTML = `
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center">
-                                <i class="fas fa-user text-white text-xs"></i>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-slate-800">${student.name}</p>
+                                    <p class="text-xs text-slate-600">${student.className} • ${student.email || 'No email'}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="font-medium text-slate-800">${student.name}</p>
-                                <p class="text-xs text-slate-600">${student.className} • ${student.email}</p>
-                            </div>
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Active</span>
                         </div>
                     `;
                     infoDiv.classList.remove('hidden');
-                }
-                
-                if (summaryStudent) {
-                    summaryStudent.textContent = `${student.name} (ID: ${student.studentId})`;
                 }
             }
         } catch (error) {
@@ -759,29 +1071,27 @@ class InvoicesManager {
     loadInvoiceFields(type) {
         const fieldsDiv = document.getElementById('invoiceFields');
         const summaryDiv = document.getElementById('summaryDetails');
-        const summaryType = document.getElementById('summaryInvoiceType');
         
-        if (!fieldsDiv || !summaryDiv || !summaryType) return;
+        if (!fieldsDiv || !summaryDiv) return;
         
         let fieldsHTML = '';
         
         switch(type) {
             case 'late_return':
-                summaryType.textContent = 'Late Return Penalty';
                 fieldsHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Days Late *</label>
                             <input type="number" id="daysLate" required min="1"
-                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                                 placeholder="Number of days late">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Penalty per Day (₹)</label>
-                            <div class="flex items-center">
-                                <span class="text-slate-500 mr-2">₹</span>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500">₹</span>
                                 <input type="number" id="penaltyPerDay" value="20" min="0" step="0.01"
-                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    class="w-full pl-8 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
                             </div>
                         </div>
                     </div>
@@ -789,59 +1099,74 @@ class InvoicesManager {
                 break;
                 
             case 'lost_book':
-                summaryType.textContent = 'Lost Book';
                 fieldsHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Book Price (₹) *</label>
-                            <input type="number" id="bookPrice" required min="0" step="0.01"
-                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                placeholder="Price of the lost book">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Days Late (Optional)</label>
-                            <input type="number" id="lostDaysLate" min="0"
-                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                placeholder="Days late before reported lost">
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500">₹</span>
+                                <input type="number" id="bookPrice" required min="0" step="0.01"
+                                    class="w-full pl-8 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Price of the lost book">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Penalty per Day (₹)</label>
-                        <div class="flex items-center">
-                            <span class="text-slate-500 mr-2">₹</span>
-                            <input type="number" id="lostPenaltyPerDay" value="20" min="0" step="0.01"
-                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                        </div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Days Late (Optional)</label>
+                        <input type="number" id="lostDaysLate" min="0"
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            placeholder="Days late before reported lost">
                     </div>
-                `;
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Late Penalty per Day (₹)</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500">₹</span>
+                        <input type="number" id="lostPenaltyPerDay" value="20" min="0" step="0.01"
+                            class="w-full pl-8 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
+                    </div>
+                </div>
+            `;
                 break;
                 
             case 'other':
-                summaryType.textContent = 'Other';
                 fieldsHTML = `
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Amount (₹) *</label>
-                        <input type="number" id="otherAmount" required min="0" step="0.01"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            placeholder="Total amount">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Description</label>
-                        <input type="text" id="otherDescription"
-                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            placeholder="Description of the charge">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Amount (₹) *</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500">₹</span>
+                                <input type="number" id="otherAmount" required min="0" step="0.01"
+                                    class="w-full pl-8 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Total amount">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Description</label>
+                            <input type="text" id="otherDescription"
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                placeholder="Description of the charge">
+                        </div>
                     </div>
                 `;
                 break;
                 
             default:
-                summaryType.textContent = 'Not selected';
-                fieldsHTML = '<p class="text-slate-500 text-center py-4">Select an invoice type to continue</p>';
+                fieldsHTML = `
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-file-invoice text-slate-400 text-2xl"></i>
+                        </div>
+                        <p class="text-slate-500 font-medium">Select an invoice type to continue</p>
+                        <p class="text-slate-400 text-sm mt-1">Choose a type above to see relevant fields</p>
+                    </div>
+                `;
                 break;
         }
         
         fieldsDiv.innerHTML = fieldsHTML;
         summaryDiv.innerHTML = '';
+        const summaryTotalAmount = document.getElementById('summaryTotalAmount');
+        if (summaryTotalAmount) summaryTotalAmount.textContent = '₹0.00';
         
         // Add event listeners to calculate total
         this.addInvoiceCalculationListeners(type);
@@ -859,16 +1184,18 @@ class InvoicesManager {
                     const penaltyPerDay = parseFloat(document.getElementById('penaltyPerDay')?.value) || 20;
                     total = daysLate * penaltyPerDay;
                     
-                    summaryHTML = `
-                        <div class="flex justify-between">
-                            <span class="text-blue-700">Days Late:</span>
-                            <span class="font-medium">${daysLate}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-blue-700">Penalty per Day:</span>
-                            <span class="font-medium">₹${penaltyPerDay.toFixed(2)}</span>
-                        </div>
-                    `;
+                    if (daysLate > 0) {
+                        summaryHTML = `
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-700">Days Late:</span>
+                                <span class="font-medium">${daysLate} days</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-700">Penalty per Day:</span>
+                                <span class="font-medium">₹${penaltyPerDay.toFixed(2)}</span>
+                            </div>
+                        `;
+                    }
                     break;
                     
                 case 'lost_book':
@@ -878,17 +1205,20 @@ class InvoicesManager {
                     total = bookPrice + (lostDaysLate * lostPenaltyPerDay);
                     
                     summaryHTML = `
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <span class="text-blue-700">Book Price:</span>
                             <span class="font-medium">₹${bookPrice.toFixed(2)}</span>
                         </div>
-                        ${lostDaysLate > 0 ? `
-                            <div class="flex justify-between">
+                    `;
+                    
+                    if (lostDaysLate > 0) {
+                        summaryHTML += `
+                            <div class="flex justify-between items-center">
                                 <span class="text-blue-700">Late Penalty (${lostDaysLate} × ₹${lostPenaltyPerDay}):</span>
                                 <span class="font-medium">₹${(lostDaysLate * lostPenaltyPerDay).toFixed(2)}</span>
                             </div>
-                        ` : ''}
-                    `;
+                        `;
+                    }
                     break;
                     
                 case 'other':
@@ -898,9 +1228,9 @@ class InvoicesManager {
                     
                     if (description) {
                         summaryHTML = `
-                            <div class="flex justify-between">
+                            <div class="flex justify-between items-center">
                                 <span class="text-blue-700">Description:</span>
-                                <span class="font-medium">${description}</span>
+                                <span class="font-medium text-sm">${description}</span>
                             </div>
                         `;
                     }
@@ -932,96 +1262,95 @@ class InvoicesManager {
     }
 
     // Generate invoice
-  // Generate invoice - FIXED VERSION
-async generateInvoice() {
-    const studentId = document.getElementById('invoiceStudentId')?.value;
-    const invoiceType = document.getElementById('invoiceType')?.value;
-    const remarks = document.getElementById('invoiceRemarks')?.value;
+    async generateInvoice() {
+        const studentId = document.getElementById('invoiceStudentId')?.value;
+        const invoiceType = document.getElementById('invoiceType')?.value;
+        const remarks = document.getElementById('invoiceRemarks')?.value;
 
-    if (!studentId || !invoiceType) {
-        this.showError('Please fill all required fields');
-        return;
-    }
-
-    let invoiceData = {
-        studentId,
-        invoiceType,
-        remarks: remarks || ''
-    };
-
-    // Add type-specific data
-    switch(invoiceType) {
-        case 'late_return':
-            const daysLate = parseInt(document.getElementById('daysLate')?.value);
-            const penaltyPerDay = parseFloat(document.getElementById('penaltyPerDay')?.value) || 20;
-            if (!daysLate || daysLate < 1) {
-                this.showError('Please enter valid number of days late');
-                return;
-            }
-            invoiceData.daysLate = daysLate;
-            invoiceData.penaltyPerDay = penaltyPerDay;
-            break;
-            
-        case 'lost_book':
-            const bookPrice = parseFloat(document.getElementById('bookPrice')?.value);
-            const lostDaysLate = parseInt(document.getElementById('lostDaysLate')?.value) || 0;
-            const lostPenaltyPerDay = parseFloat(document.getElementById('lostPenaltyPerDay')?.value) || 20;
-            if (!bookPrice || bookPrice <= 0) {
-                this.showError('Please enter valid book price');
-                return;
-            }
-            invoiceData.bookPrice = bookPrice;
-            invoiceData.daysLate = lostDaysLate;
-            invoiceData.penaltyPerDay = lostPenaltyPerDay;
-            break;
-            
-        case 'other':
-            const otherAmount = parseFloat(document.getElementById('otherAmount')?.value);
-            const description = document.getElementById('otherDescription')?.value;
-            if (!otherAmount || otherAmount <= 0) {
-                this.showError('Please enter valid amount');
-                return;
-            }
-            invoiceData.totalAmount = otherAmount;
-            // Add description to remarks if provided
-            if (description) {
-                invoiceData.remarks = (invoiceData.remarks ? invoiceData.remarks + ' | ' : '') + description;
-            }
-            break;
-    }
-
-    const submitBtn = document.getElementById('generateInvoiceSubmitBtn');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-    submitBtn.disabled = true;
-
-    try {
-        const response = await this.fetch(this.baseURL, {
-            method: 'POST',
-            body: JSON.stringify(invoiceData)
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok || !data.success) {
-            throw new Error(data.message || 'Failed to generate invoice');
+        if (!studentId || !invoiceType) {
+            this.showError('Please fill all required fields');
+            return;
         }
 
-        this.showSuccess(`Invoice #${data.invoice?.invoiceId || data.invoice?._id} generated successfully!`);
-        
-        // Close modal
-        document.querySelector('.fixed.bg-black')?.remove();
-        
-        // Refresh invoices list
-        this.loadInvoices();
-        
-    } catch (error) {
-        this.showError(error.message || 'Failed to generate invoice. Please try again.');
-    } finally {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+        let invoiceData = {
+            studentId,
+            invoiceType,
+            remarks: remarks || ''
+        };
+
+        // Add type-specific data
+        switch(invoiceType) {
+            case 'late_return':
+                const daysLate = parseInt(document.getElementById('daysLate')?.value);
+                const penaltyPerDay = parseFloat(document.getElementById('penaltyPerDay')?.value) || 20;
+                if (!daysLate || daysLate < 1) {
+                    this.showError('Please enter valid number of days late');
+                    return;
+                }
+                invoiceData.daysLate = daysLate;
+                invoiceData.penaltyPerDay = penaltyPerDay;
+                break;
+                
+            case 'lost_book':
+                const bookPrice = parseFloat(document.getElementById('bookPrice')?.value);
+                const lostDaysLate = parseInt(document.getElementById('lostDaysLate')?.value) || 0;
+                const lostPenaltyPerDay = parseFloat(document.getElementById('lostPenaltyPerDay')?.value) || 20;
+                if (!bookPrice || bookPrice <= 0) {
+                    this.showError('Please enter valid book price');
+                    return;
+                }
+                invoiceData.bookPrice = bookPrice;
+                invoiceData.daysLate = lostDaysLate;
+                invoiceData.penaltyPerDay = lostPenaltyPerDay;
+                break;
+                
+            case 'other':
+                const otherAmount = parseFloat(document.getElementById('otherAmount')?.value);
+                const description = document.getElementById('otherDescription')?.value;
+                if (!otherAmount || otherAmount <= 0) {
+                    this.showError('Please enter valid amount');
+                    return;
+                }
+                invoiceData.totalAmount = otherAmount;
+                // Add description to remarks if provided
+                if (description) {
+                    invoiceData.remarks = (invoiceData.remarks ? invoiceData.remarks + ' | ' : '') + description;
+                }
+                break;
+        }
+
+        const submitBtn = document.getElementById('generateInvoiceSubmitBtn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await this.fetch(this.baseURL, {
+                method: 'POST',
+                body: JSON.stringify(invoiceData)
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to generate invoice');
+            }
+
+            this.showSuccess(`Invoice #${data.invoice?.invoiceId || data.invoice?._id} generated successfully!`);
+            
+            // Close modal
+            document.querySelector('.fixed.bg-black')?.remove();
+            
+            // Refresh invoices list
+            this.loadInvoices();
+            
+        } catch (error) {
+            this.showError(error.message || 'Failed to generate invoice. Please try again.');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
     }
-}
 
     // View invoice details
     async viewInvoiceDetails(invoiceId) {
@@ -1372,7 +1701,7 @@ async generateInvoice() {
         }
     }
 
-    // Print invoice HTML - UPDATED WITH COLLEGE NAME AND SIGNATURES
+    // Print invoice HTML
     printInvoiceHTML(invoice) {
         const printWindow = window.open('', '_blank');
         
@@ -1688,8 +2017,6 @@ async generateInvoice() {
                                 <div class="signature-title">Principal</div>
                             </div>
                         </div>
-                        
-                       
                     </div>
                 </div>
                 
@@ -1963,20 +2290,259 @@ async generateInvoice() {
         }
     }
 
+    // Show delete invoice modal
+    async showDeleteInvoiceModal(invoiceId) {
+        try {
+            const response = await this.fetch(`${this.baseURL}/${invoiceId}`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to load invoice details');
+            }
+
+            const data = await response.json();
+            const invoice = data.invoice;
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full animate-scale-in">
+                    <div class="p-6">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-2">Delete Invoice</h3>
+                            <p class="text-slate-600">Are you sure you want to delete this invoice? This action cannot be undone.</p>
+                        </div>
+                        
+                        <div class="mb-6 p-4 bg-red-50 rounded-lg border border-red-200">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-slate-600">Invoice #:</span>
+                                <span class="font-medium">${invoice.invoiceId || invoice._id}</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-slate-600">Student:</span>
+                                <span class="font-medium">${invoice.student?.name || 'Unknown Student'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Amount:</span>
+                                <span class="font-bold text-red-600">₹${invoice.totalAmount?.toFixed(2) || '0.00'}</span>
+                            </div>
+                            <div class="flex justify-between mt-2">
+                                <span class="text-slate-600">Status:</span>
+                                <span class="font-medium ${invoice.status === 'paid' ? 'text-green-600' : invoice.status === 'pending' ? 'text-yellow-600' : 'text-red-600'}">
+                                    ${(invoice.status || '').charAt(0).toUpperCase() + (invoice.status || '').slice(1)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            ${invoice.status === 'paid' ? `
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <div class="flex items-start space-x-2">
+                                        <i class="fas fa-exclamation-circle text-yellow-600 mt-0.5"></i>
+                                        <div>
+                                            <p class="text-sm text-yellow-800 font-medium">Warning: Paid Invoice</p>
+                                            <p class="text-xs text-yellow-700">This invoice has been paid. Deleting it may affect your financial records.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${invoice.invoiceType === 'lost_book' && invoice.book ? `
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <div class="flex items-start space-x-2">
+                                        <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
+                                        <div>
+                                            <p class="text-sm text-blue-800 font-medium">Note: Book Status</p>
+                                            <p class="text-xs text-blue-700">The associated book "${invoice.book.title}" will be marked as available again.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="flex space-x-3 mt-6">
+                            <button type="button" onclick="this.closest('.fixed').remove()"
+                                class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                                Cancel
+                            </button>
+                            <button id="confirmDeleteBtn" data-id="${invoiceId}"
+                                class="flex-1 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-2">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Delete Invoice</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Handle confirmation
+            modal.querySelector('#confirmDeleteBtn').addEventListener('click', async (e) => {
+                const invoiceId = e.currentTarget.dataset.id;
+                await this.deleteInvoice(invoiceId);
+            });
+            
+        } catch (error) {
+            this.showError('Failed to load invoice details. Please try again.');
+        }
+    }
+
+    // Delete invoice
+    async deleteInvoice(invoiceId) {
+        const modal = document.querySelector('.fixed.bg-black');
+        const confirmBtn = modal?.querySelector('#confirmDeleteBtn');
+        
+        if (confirmBtn) {
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            confirmBtn.disabled = true;
+        }
+
+        try {
+            const response = await this.fetch(`${this.baseURL}/${invoiceId}`, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to delete invoice');
+            }
+
+            this.showSuccess('Invoice deleted successfully!');
+            
+            // Close modal
+            document.querySelector('.fixed.bg-black')?.remove();
+            
+            // Refresh invoices list
+            this.loadInvoices();
+            
+        } catch (error) {
+            this.showError(error.message || 'Failed to delete invoice. Please try again.');
+            if (confirmBtn) {
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
+            }
+        }
+    }
+
+    // Render pagination
+    renderPagination() {
+        const container = document.getElementById('paginationContainer');
+        if (!container) return;
+
+        const startItem = ((this.currentPage - 1) * this.limit) + 1;
+        const endItem = Math.min(this.currentPage * this.limit, this.totalRecords);
+        
+        let html = `
+            <div class="flex items-center justify-between">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <button onclick="invoicesManager.previousPage()" ${this.currentPage === 1 ? 'disabled' : ''} 
+                        class="relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md ${this.currentPage === 1 ? 'text-slate-400 bg-slate-50' : 'text-slate-700 bg-white hover:bg-slate-50'} transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                        Previous
+                    </button>
+                    <button onclick="invoicesManager.nextPage()" ${this.currentPage === this.totalPages ? 'disabled' : ''}
+                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md ${this.currentPage === this.totalPages ? 'text-slate-400 bg-slate-50' : 'text-slate-700 bg-white hover:bg-slate-50'} transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                        Next
+                    </button>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-slate-700">
+                            Showing <span class="font-medium">${startItem}</span> to 
+                            <span class="font-medium">${endItem}</span> of
+                            <span class="font-medium">${this.totalRecords}</span> invoices
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+        `;
+
+        // Previous button
+        html += `
+            <button onclick="invoicesManager.previousPage()" ${this.currentPage === 1 ? 'disabled' : ''}
+                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium ${this.currentPage === 1 ? 'text-slate-300' : 'text-slate-500 hover:bg-slate-50'} transition-all duration-200 hover:scale-105">
+                <span class="sr-only">Previous</span>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        `;
+
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+        
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            html += `
+                <button onclick="invoicesManager.goToPage(${i})"
+                    class="relative inline-flex items-center px-4 py-2 border border-slate-300 bg-white text-sm font-medium ${i === this.currentPage ? 'z-10 bg-purple-50 border-purple-500 text-purple-600' : 'text-slate-500 hover:bg-slate-50'} transition-all duration-200 hover:scale-105">
+                    ${i}
+                </button>
+            `;
+        }
+
+        // Next button
+        html += `
+            <button onclick="invoicesManager.nextPage()" ${this.currentPage === this.totalPages ? 'disabled' : ''}
+                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-300 bg-white text-sm font-medium ${this.currentPage === this.totalPages ? 'text-slate-300' : 'text-slate-500 hover:bg-slate-50'} transition-all duration-200 hover:scale-105">
+                <span class="sr-only">Next</span>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+
+        html += `
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    // Pagination methods
+    previousPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+            this.loadInvoices();
+        }
+    }
+
+    nextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+            this.loadInvoices();
+        }
+    }
+
+    goToPage(page) {
+        if (page >= 1 && page <= this.totalPages) {
+            this.currentPage = page;
+            this.loadInvoices();
+        }
+    }
+
     // Show success message
     showSuccess(message) {
         const toast = document.createElement('div');
-        toast.className = 'animate-fade-in bg-white border-l-4 border-green-500 p-4 rounded-r-lg shadow-lg max-w-md';
+        toast.className = 'animate-slide-in-right bg-white border-l-4 border-green-500 p-4 rounded-r-lg shadow-lg max-w-md';
         toast.innerHTML = `
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                    <i class="fas fa-check-circle text-green-500 text-lg animate-pulse"></i>
                 </div>
                 <div class="ml-3">
                     <p class="text-sm font-medium text-slate-900">${message}</p>
                 </div>
                 <div class="ml-auto pl-3">
-                    <button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-slate-500">
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-slate-500 transition-all duration-150 hover:scale-110">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -1988,25 +2554,26 @@ async generateInvoice() {
 
         setTimeout(() => {
             if (toast.parentElement) {
-                toast.remove();
+                toast.classList.add('animate-fade-out');
+                setTimeout(() => toast.remove(), 300);
             }
-        }, 5000);
+        }, 3000);
     }
 
     // Show error message
     showError(message) {
         const toast = document.createElement('div');
-        toast.className = 'animate-fade-in bg-white border-l-4 border-red-500 p-4 rounded-r-lg shadow-lg max-w-md';
+        toast.className = 'animate-slide-in-right bg-white border-l-4 border-red-500 p-4 rounded-r-lg shadow-lg max-w-md';
         toast.innerHTML = `
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-500 text-lg"></i>
+                    <i class="fas fa-exclamation-circle text-red-500 text-lg animate-pulse"></i>
                 </div>
                 <div class="ml-3">
                     <p class="text-sm font-medium text-slate-900">${message}</p>
                 </div>
                 <div class="ml-auto pl-3">
-                    <button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-slate-500">
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-slate-400 hover:text-slate-500 transition-all duration-150 hover:scale-110">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -2018,11 +2585,198 @@ async generateInvoice() {
 
         setTimeout(() => {
             if (toast.parentElement) {
-                toast.remove();
+                toast.classList.add('animate-fade-out');
+                setTimeout(() => toast.remove(), 300);
             }
         }, 5000);
     }
 }
+
+// Add CSS animations for dropdowns
+const style = document.createElement('style');
+style.textContent = `
+    /* Custom Filter Dropdown Animations */
+    .custom-filter-dropdown {
+        transform-origin: top;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .custom-filter-dropdown:not(.opacity-100) {
+        pointer-events: none;
+    }
+    
+    /* Custom Invoice Dropdown Styles */
+    .custom-invoice-dropdown {
+        position: relative;
+    }
+    
+    .dropdown-select-btn {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .dropdown-select-btn:hover {
+        border-color: #94a3b8;
+    }
+    
+    .custom-dropdown-options {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        transform-origin: top;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .custom-dropdown-options:not(.opacity-100) {
+        pointer-events: none;
+    }
+    
+    /* Dropdown Item Animations */
+    .custom-dropdown-item {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.15s ease;
+    }
+    
+    .custom-dropdown-item:hover {
+        transform: translateX(4px);
+    }
+    
+    .custom-dropdown-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+        transition: left 0.3s ease;
+    }
+    
+    .custom-dropdown-item:hover::before {
+        left: 100%;
+    }
+    
+    /* Dropdown Button Hover Effects */
+    .dropdown-btn:hover .fa-chevron-down,
+    .dropdown-select-btn:hover .fa-chevron-down {
+        transform: rotate(180deg);
+    }
+    
+    /* Fade In Up Animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease forwards;
+        opacity: 0;
+    }
+    
+    /* Slide In Right Animation */
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .animate-slide-in-right {
+        animation: slideInRight 0.3s ease forwards;
+    }
+    
+    /* Fade Out Animation */
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+    
+    .animate-fade-out {
+        animation: fadeOut 0.3s ease forwards;
+    }
+    
+    /* Scale In Animation */
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .animate-scale-in {
+        animation: scaleIn 0.2s ease-out forwards;
+    }
+    
+    /* Rotate Animation */
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
+    
+    /* Smooth Transitions */
+    .transition-all {
+        transition-property: all;
+    }
+    
+    /* Pulse Animation */
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+    }
+    
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    /* Table Action Buttons */
+    .view-invoice-btn, .print-invoice-btn, .mark-paid-btn, .delete-invoice-btn {
+        transition: all 0.2s ease;
+    }
+    
+    .view-invoice-btn:hover, .print-invoice-btn:hover, .mark-paid-btn:hover, .delete-invoice-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    /* Dropdown scrollbar styling */
+    .custom-dropdown-options::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .custom-dropdown-options::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 3px;
+    }
+    
+    .custom-dropdown-options::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+    
+    .custom-dropdown-options::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+`;
+
+document.head.appendChild(style);
 
 // Load invoices page when function is called
 function loadInvoicesPage() {

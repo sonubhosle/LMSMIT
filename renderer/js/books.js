@@ -7,6 +7,8 @@ class BooksManager {
         this.searchQuery = '';
         this.totalPages = 1;
         this.selectedBook = null;
+        this.bookIdMap = new Map();
+        this.activeDropdown = null;
     }
 
     // Custom fetch function with JWT token
@@ -31,7 +33,6 @@ class BooksManager {
 
         const response = await fetch(url, mergedOptions);
         
-        // Handle unauthorized
         if (response.status === 401) {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
@@ -84,19 +85,78 @@ class BooksManager {
                                 <i class="fas fa-search absolute left-3 top-3 text-slate-400"></i>
                             </div>
                         </div>
-                        <div>
-                            <select id="categoryFilter" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="">All Categories</option>
-                                <option value="Fiction">Fiction</option>
-                                <option value="Non-Fiction">Non-Fiction</option>
-                                <option value="Science">Science</option>
-                                <option value="Technology">Technology</option>
-                                <option value="Literature">Literature</option>
-                                <option value="History">History</option>
-                                <option value="Biography">Biography</option>
-                                <option value="Educational">Educational</option>
-                            </select>
+                        
+                        <!-- Custom Category Filter Dropdown -->
+                        <div class="relative">
+                            <button 
+                                type="button"
+                                id="categoryFilterTrigger"
+                                class="custom-dropdown-trigger w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white text-left flex items-center justify-between transition-all duration-200 hover:border-slate-400"
+                            >
+                                <span id="categoryFilterValue">All Categories</span>
+                                <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                            </button>
+                            
+                            <div 
+                                id="categoryFilterDropdown"
+                                class="custom-dropdown-menu hidden absolute z-50 w-full bg-white rounded-lg shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300 transform origin-top scale-y-0 opacity-0 max-h-0"
+                            >
+                                <div class="p-3 border-b border-slate-100">
+                                    <div class="relative">
+                                        <input 
+                                            type="text" 
+                                            class="dropdown-search w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                            placeholder="Search category..."
+                                        >
+                                        <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-sm"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="overflow-y-auto max-h-60">
+                                    <div class="py-1">
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="">
+                                            <span>All Categories</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Fiction">
+                                            <span>Fiction</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Non-Fiction">
+                                            <span>Non-Fiction</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Science">
+                                            <span>Science</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Technology">
+                                            <span>Technology</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Literature">
+                                            <span>Literature</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="History">
+                                            <span>History</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Biography">
+                                            <span>Biography</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                        <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Educational">
+                                            <span>Educational</span>
+                                            <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" id="categoryFilter" name="categoryFilter" value="">
                         </div>
+                        
                         <div class="flex space-x-2">
                             <button id="clearFiltersBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-200">
                                 Clear
@@ -141,7 +201,6 @@ class BooksManager {
                                 </tr>
                             </thead>
                             <tbody id="booksTableBody" class="bg-white divide-y divide-slate-200">
-                                <!-- Books will be loaded here -->
                                 <tr>
                                     <td colspan="8" class="px-6 py-12 text-center">
                                         <div class="flex flex-col items-center justify-center">
@@ -155,9 +214,7 @@ class BooksManager {
                     </div>
 
                     <!-- Pagination -->
-                    <div id="paginationContainer" class="px-6 py-4 border-t border-slate-200">
-                        <!-- Pagination will be loaded here -->
-                    </div>
+                    <div id="paginationContainer" class="px-6 py-4 border-t border-slate-200"></div>
                 </div>
 
                 <!-- Stats Summary -->
@@ -207,22 +264,281 @@ class BooksManager {
                         </div>
                     </div>
                 </div>
+
+                <!-- Custom Dropdown for Book Actions -->
+                <div id="customBookDropdown" class="hidden fixed z-50 bg-white rounded-xl shadow-2xl border border-slate-200 max-h-96 w-96 overflow-hidden" style="top: 0; left: 0;"></div>
             </div>
         `;
 
+        // Add CSS for custom dropdowns
+        this.addCustomDropdownStyles();
+        
         // Load books data
         await this.loadBooks();
         
         // Setup event listeners
         this.setupEventListeners();
+        this.initializeCustomDropdowns();
     }
 
-    // Load books data - FIXED
+    // Add CSS for custom dropdowns
+    addCustomDropdownStyles() {
+        if (!document.getElementById('custom-dropdown-styles')) {
+            const style = document.createElement('style');
+            style.id = 'custom-dropdown-styles';
+            style.textContent = `
+                /* Custom Dropdown Styles - FIXED POSITIONING */
+                .custom-dropdown-menu {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    width: 100%;
+                    background-color: white;
+                    border-radius: 0.5rem;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                    border: 1px solid #e2e8f0;
+                    overflow: hidden;
+                    transform-origin: top;
+                    transform: scaleY(0);
+                    opacity: 0;
+                    max-height: 0;
+                    margin-top: 0.25rem;
+                    z-index: 50;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                
+                .custom-dropdown-menu.open {
+                    transform: scaleY(1);
+                    opacity: 1;
+                    max-height: 300px;
+                }
+                
+                .custom-dropdown-menu.closing {
+                    transform: scaleY(0);
+                    opacity: 0;
+                    max-height: 0;
+                }
+                
+                .custom-dropdown-trigger.active {
+                    border-color: #8b5cf6;
+                    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+                }
+                
+                .custom-dropdown-trigger.active i {
+                    transform: rotate(180deg);
+                }
+                
+                .dropdown-option.selected {
+                    background-color: #f5f3ff;
+                    font-weight: 500;
+                }
+                
+                .dropdown-option.selected i {
+                    opacity: 1 !important;
+                }
+                
+                .dropdown-option:hover i {
+                    opacity: 0.5;
+                }
+                
+                /* Animation for dropdown items */
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-5px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .dropdown-option {
+                    animation: fadeInUp 0.2s ease-out forwards;
+                    opacity: 0;
+                    animation-delay: calc(var(--index, 0) * 0.05s);
+                }
+                
+                .dropdown-option:nth-child(1) { --index: 1; }
+                .dropdown-option:nth-child(2) { --index: 2; }
+                .dropdown-option:nth-child(3) { --index: 3; }
+                .dropdown-option:nth-child(4) { --index: 4; }
+                .dropdown-option:nth-child(5) { --index: 5; }
+                .dropdown-option:nth-child(6) { --index: 6; }
+                .dropdown-option:nth-child(7) { --index: 7; }
+                .dropdown-option:nth-child(8) { --index: 8; }
+                .dropdown-option:nth-child(9) { --index: 9; }
+                .dropdown-option:nth-child(10) { --index: 10; }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    // Initialize custom dropdowns
+    initializeCustomDropdowns() {
+        // Initialize category filter dropdown
+        this.initializeCustomDropdown(
+            'categoryFilterTrigger',
+            'categoryFilterDropdown',
+            'categoryFilter',
+            'categoryFilterValue'
+        );
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (this.activeDropdown && 
+                !e.target.closest('.custom-dropdown-trigger') && 
+                !e.target.closest('.custom-dropdown-menu')) {
+                this.closeDropdown(this.activeDropdown);
+                this.activeDropdown = null;
+                
+                // Remove active class from all triggers
+                document.querySelectorAll('.custom-dropdown-trigger.active').forEach(trigger => {
+                    trigger.classList.remove('active');
+                });
+            }
+        });
+
+        // Close dropdowns on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.activeDropdown) {
+                this.closeDropdown(this.activeDropdown);
+                this.activeDropdown = null;
+                
+                document.querySelectorAll('.custom-dropdown-trigger.active').forEach(trigger => {
+                    trigger.classList.remove('active');
+                });
+            }
+        });
+    }
+
+    // Initialize a single custom dropdown
+    initializeCustomDropdown(triggerId, dropdownId, hiddenInputId, valueDisplayId) {
+        const trigger = document.getElementById(triggerId);
+        const dropdown = document.getElementById(dropdownId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+        const valueDisplay = document.getElementById(valueDisplayId);
+
+        if (!trigger || !dropdown) return;
+
+        // Toggle dropdown on trigger click
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            if (dropdown.classList.contains('open')) {
+                this.closeDropdown(dropdown);
+                this.activeDropdown = null;
+                trigger.classList.remove('active');
+            } else {
+                // Close any other open dropdown
+                if (this.activeDropdown && this.activeDropdown !== dropdown) {
+                    this.closeDropdown(this.activeDropdown);
+                    document.querySelectorAll('.custom-dropdown-trigger.active').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                }
+                
+                // Open this dropdown
+                this.openDropdown(dropdown);
+                this.activeDropdown = dropdown;
+                trigger.classList.add('active');
+            }
+        });
+
+        // Handle option selection
+        dropdown.querySelectorAll('.dropdown-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const value = e.currentTarget.dataset.value;
+                const text = e.currentTarget.querySelector('span').textContent;
+                
+                // Update display
+                if (valueDisplay) {
+                    valueDisplay.textContent = text;
+                }
+                
+                // Update hidden input
+                if (hiddenInput) {
+                    hiddenInput.value = value;
+                }
+                
+                // Mark as selected
+                dropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    opt.querySelector('i').style.opacity = '0';
+                });
+                e.currentTarget.classList.add('selected');
+                e.currentTarget.querySelector('i').style.opacity = '1';
+                
+                // Close dropdown
+                this.closeDropdown(dropdown);
+                this.activeDropdown = null;
+                trigger.classList.remove('active');
+                
+                // Trigger change event for filters
+                if (hiddenInputId === 'categoryFilter') {
+                    setTimeout(() => {
+                        this.currentPage = 1;
+                        this.loadBooks();
+                    }, 100);
+                }
+            });
+        });
+
+        // Handle search in dropdown
+        const searchInput = dropdown.querySelector('.dropdown-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const options = dropdown.querySelectorAll('.dropdown-option');
+                
+                options.forEach(option => {
+                    const text = option.querySelector('span').textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        option.style.display = 'flex';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Clear search when dropdown closes
+            dropdown.addEventListener('transitionend', () => {
+                if (!dropdown.classList.contains('open')) {
+                    searchInput.value = '';
+                    dropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+                        opt.style.display = 'flex';
+                    });
+                }
+            });
+        }
+    }
+
+    // Open dropdown
+    openDropdown(dropdown) {
+        dropdown.classList.remove('hidden');
+        // Force reflow for animation
+        dropdown.offsetHeight;
+        dropdown.classList.add('open');
+    }
+
+    // Close dropdown
+    closeDropdown(dropdown) {
+        if (!dropdown.classList.contains('open')) return;
+        
+        dropdown.classList.remove('open');
+        dropdown.classList.add('closing');
+        
+        setTimeout(() => {
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('closing');
+        }, 300);
+    }
+
+    // Load books data
     async loadBooks() {
         try {
             const tbody = document.getElementById('booksTableBody');
-            
-            // Show loading state
             tbody.innerHTML = `
                 <tr>
                     <td colspan="8" class="px-6 py-12 text-center">
@@ -241,9 +557,6 @@ class BooksManager {
                 url += `&category=${encodeURIComponent(categoryFilter)}`;
             }
             
-            console.log('Fetching books from:', url);
-            
-            // Use the custom fetch method
             const response = await this.fetch(url);
             
             if (!response.ok) {
@@ -251,7 +564,6 @@ class BooksManager {
             }
 
             const data = await response.json();
-            console.log('Books data received:', data);
             
             if (!data.success) {
                 throw new Error(data.message || 'Failed to load books');
@@ -259,19 +571,16 @@ class BooksManager {
 
             this.totalPages = data.pages || 1;
             
-            // Update stats
             await this.updateBooksStats();
             
-            // Render table
-            this.renderBooksTable(data.books || []);
+            const processedBooks = this.processBooksForDuplicates(data.books || []);
             
-            // Render pagination
+            this.renderBooksTable(processedBooks);
             this.renderPagination();
             
         } catch (error) {
             console.error('Error loading books:', error);
             
-            // Show error in table
             const tbody = document.getElementById('booksTableBody');
             tbody.innerHTML = `
                 <tr>
@@ -292,7 +601,38 @@ class BooksManager {
         }
     }
 
-    // Update books statistics - FIXED
+    // Process books to handle duplicate IDs
+    processBooksForDuplicates(books) {
+        const idCount = new Map();
+        const processedBooks = [];
+        
+        books.forEach(book => {
+            const bookId = book.bookId || book._id?.slice(-6) || 'N/A';
+            idCount.set(bookId, (idCount.get(bookId) || 0) + 1);
+        });
+        
+        const idUsedCount = new Map();
+        books.forEach(book => {
+            const originalId = book.bookId || book._id?.slice(-6) || 'N/A';
+            const count = idCount.get(originalId);
+            
+            if (count > 1) {
+                const usedCount = (idUsedCount.get(originalId) || 0) + 1;
+                idUsedCount.set(originalId, usedCount);
+                book.displayId = `${originalId}-D${usedCount}`;
+                book.isDuplicate = true;
+            } else {
+                book.displayId = originalId;
+                book.isDuplicate = false;
+            }
+            
+            processedBooks.push(book);
+        });
+        
+        return processedBooks;
+    }
+
+    // Update books statistics
     async updateBooksStats() {
         try {
             const response = await this.fetch(`${this.baseURL}/stats/summary`);
@@ -307,7 +647,6 @@ class BooksManager {
                         maximumFractionDigits: 2
                     })}`;
                     
-                    // Calculate issued books
                     const issuedBooks = data.stats.totalBooks - data.stats.availableBooks;
                     document.getElementById('issuedBooksCount').textContent = issuedBooks.toLocaleString();
                 }
@@ -317,7 +656,7 @@ class BooksManager {
         }
     }
 
-    // Render books table - FIXED
+    // Render books table
     renderBooksTable(books) {
         const tbody = document.getElementById('booksTableBody');
         
@@ -355,7 +694,6 @@ class BooksManager {
                 (book.availableQuantity < book.quantity ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800') : 
                 'bg-red-100 text-red-800';
             
-            // Generate availability icon
             let availabilityIcon = 'fa-check-circle text-green-600';
             if (book.availableQuantity < book.quantity) {
                 availabilityIcon = 'fa-exclamation-circle text-yellow-600';
@@ -363,10 +701,22 @@ class BooksManager {
                 availabilityIcon = 'fa-times-circle text-red-600';
             }
             
+            const displayId = book.displayId || book.bookId || book._id?.slice(-6) || 'N/A';
+            
             html += `
                 <tr class="hover:bg-slate-50 transition duration-150" data-book-id="${book._id}">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-slate-900">${book.bookId || book._id?.slice(-6) || 'N/A'}</div>
+                        <div class="text-sm font-medium text-slate-900 relative">
+                            ${displayId}
+                            ${book.isDuplicate ? `
+                                <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" title="Duplicate ID"></span>
+                            ` : ''}
+                        </div>
+                        ${book.isDuplicate ? `
+                            <div class="text-xs text-red-500 mt-1">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>Duplicate
+                            </div>
+                        ` : ''}
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center">
@@ -405,20 +755,9 @@ class BooksManager {
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div class="flex items-center space-x-2">
-                            <button class="view-book-btn text-blue-600 hover:text-blue-900" data-id="${book._id}" title="View Details">
-                                <i class="fas fa-eye"></i>
+                            <button class="select-book-btn bg-slate-100 border border-slate-200 text-slate-700 px-3 py-2 rounded-xl" data-id="${book._id}" title="Select for Action">
+                                Actions 
                             </button>
-                            <button class="edit-book-btn text-green-600 hover:text-green-900" data-id="${book._id}" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="delete-book-btn text-red-600 hover:text-red-900" data-id="${book._id}" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            ${(book.availableQuantity || 0) > 0 ? `
-                                <button class="issue-book-btn text-purple-600 hover:text-purple-900" data-id="${book._id}" title="Issue Book">
-                                    <i class="fas fa-share-square"></i>
-                                </button>
-                            ` : ''}
                         </div>
                     </td>
                 </tr>
@@ -426,12 +765,233 @@ class BooksManager {
         });
 
         tbody.innerHTML = html;
-        
-        // Add event listeners to action buttons
         this.setupTableEventListeners();
     }
 
-    // Render pagination - FIXED
+    // Setup table event listeners
+    setupTableEventListeners() {
+        // Select book (custom dropdown)
+        document.querySelectorAll('.select-book-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const bookId = e.currentTarget.dataset.id;
+                const buttonRect = e.currentTarget.getBoundingClientRect();
+                this.showCustomDropdown(bookId, buttonRect);
+            });
+        });
+    }
+
+    // Show custom dropdown
+    showCustomDropdown(bookId, buttonRect) {
+        this.hideCustomDropdown();
+        
+        const bookRow = document.querySelector(`tr[data-book-id="${bookId}"]`);
+        if (!bookRow) return;
+        
+        const dropdown = document.getElementById('customBookDropdown');
+        dropdown.innerHTML = `
+            <div class="p-4 border-b border-slate-200">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-semibold text-slate-800">Book Actions</h4>
+                    <button id="closeDropdownBtn" class="text-slate-400 hover:text-slate-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-slate-500 mt-1">Select an action for this book</p>
+            </div>
+            <div class="overflow-y-auto max-h-80">
+                <div class="divide-y divide-slate-100">
+                    <button class="dropdown-option w-full p-4 text-left hover:bg-slate-50 transition duration-150 flex items-center space-x-3" data-action="view">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-eye text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-800">View Details</p>
+                            <p class="text-sm text-slate-500">See complete book information</p>
+                        </div>
+                    </button>
+                    <button class="dropdown-option w-full p-4 text-left hover:bg-slate-50 transition duration-150 flex items-center space-x-3" data-action="edit">
+                        <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-edit text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-800">Edit Book</p>
+                            <p class="text-sm text-slate-500">Modify book details</p>
+                        </div>
+                    </button>
+                    <button class="dropdown-option w-full p-4 text-left hover:bg-slate-50 transition duration-150 flex items-center space-x-3" data-action="delete">
+                        <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                            <i class="fas fa-trash text-red-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-800">Delete Book</p>
+                            <p class="text-sm text-slate-500">Remove from library</p>
+                        </div>
+                    </button>
+                    <button class="dropdown-option w-full p-4 text-left hover:bg-slate-50 transition duration-150 flex items-center space-x-3" data-action="issue">
+                        <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                            <i class="fas fa-share-square text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-800">Issue Book</p>
+                            <p class="text-sm text-slate-500">Assign to a member</p>
+                        </div>
+                    </button>
+                    <button class="dropdown-option w-full p-4 text-left hover:bg-slate-50 transition duration-150 flex items-center space-x-3" data-action="duplicate">
+                        <div class="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center">
+                            <i class="fas fa-copy text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-800">Clone Book</p>
+                            <p class="text-sm text-slate-500">Create a copy with new ID</p>
+                        </div>
+                    </button>
+                    <button class="dropdown-option w-full p-4 text-left hover:bg-slate-50 transition duration-150 flex items-center space-x-3" data-action="report">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+                            <i class="fas fa-chart-bar text-indigo-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-slate-800">Generate Report</p>
+                            <p class="text-sm text-slate-500">Create usage report</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-200 bg-slate-50">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-slate-600">
+                        Book ID: <span class="font-mono">${bookId.slice(-8)}</span>
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        <i class="fas fa-clock mr-1"></i>Just now
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Position dropdown below the button
+        dropdown.style.top = `${buttonRect.bottom + window.scrollY + 5}px`;
+        dropdown.style.left = `${buttonRect.left + window.scrollX}px`;
+        
+        dropdown.classList.remove('hidden');
+        dropdown.classList.add('animate-slide-down');
+        
+        dropdown.querySelector('#closeDropdownBtn').addEventListener('click', () => {
+            this.hideCustomDropdown();
+        });
+        
+        dropdown.querySelectorAll('.dropdown-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const action = e.currentTarget.dataset.action;
+                this.handleDropdownAction(action, bookId);
+                this.hideCustomDropdown();
+            });
+        });
+        
+        setTimeout(() => {
+            const clickHandler = (e) => {
+                if (!dropdown.contains(e.target) && !e.target.closest('.select-book-btn')) {
+                    this.hideCustomDropdown();
+                    document.removeEventListener('click', clickHandler);
+                }
+            };
+            document.addEventListener('click', clickHandler);
+        }, 100);
+    }
+    
+    // Hide custom dropdown
+    hideCustomDropdown() {
+        const dropdown = document.getElementById('customBookDropdown');
+        dropdown.classList.add('hidden');
+        dropdown.classList.remove('animate-slide-down');
+    }
+    
+    // Handle dropdown actions
+    handleDropdownAction(action, bookId) {
+        switch(action) {
+            case 'view':
+                this.viewBookDetails(bookId);
+                break;
+            case 'edit':
+                this.showEditBookModal(bookId);
+                break;
+            case 'delete':
+                this.showDeleteConfirmation(bookId);
+                break;
+            case 'issue':
+                this.showIssueBookModal(bookId);
+                break;
+            case 'duplicate':
+                this.cloneBook(bookId);
+                break;
+            case 'report':
+                this.generateBookReport(bookId);
+                break;
+        }
+    }
+
+    // Setup event listeners
+    setupEventListeners() {
+        // Search button
+        document.getElementById('searchBooksBtn')?.addEventListener('click', () => {
+            this.searchQuery = document.getElementById('bookSearch').value;
+            this.currentPage = 1;
+            this.loadBooks();
+        });
+
+        // Clear filters
+        document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+            this.searchQuery = '';
+            document.getElementById('bookSearch').value = '';
+            
+            // Reset category filter
+            const valueDisplay = document.getElementById('categoryFilterValue');
+            const hiddenInput = document.getElementById('categoryFilter');
+            if (valueDisplay) valueDisplay.textContent = 'All Categories';
+            if (hiddenInput) hiddenInput.value = '';
+            
+            // Reset dropdown selection
+            const dropdown = document.getElementById('categoryFilterDropdown');
+            if (dropdown) {
+                dropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    opt.querySelector('i').style.opacity = '0';
+                    if (opt.dataset.value === '') {
+                        opt.classList.add('selected');
+                        opt.querySelector('i').style.opacity = '1';
+                    }
+                });
+            }
+            
+            this.currentPage = 1;
+            this.loadBooks();
+        });
+
+        // Enter key in search
+        document.getElementById('bookSearch')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.searchQuery = e.target.value;
+                this.currentPage = 1;
+                this.loadBooks();
+            }
+        });
+
+        // Add book button
+        document.getElementById('addBookBtn')?.addEventListener('click', () => {
+            this.showAddBookModal();
+        });
+
+        // Export books button
+        document.getElementById('exportBooksBtn')?.addEventListener('click', () => {
+            this.exportBooksToExcel();
+        });
+
+        // Print books button
+        document.getElementById('printBooksBtn')?.addEventListener('click', () => {
+            this.printBooksList();
+        });
+    }
+
+    // Render pagination
     renderPagination() {
         const container = document.getElementById('paginationContainer');
         if (!container || this.totalPages <= 1) {
@@ -508,117 +1068,7 @@ class BooksManager {
         container.innerHTML = html;
     }
 
-    // Setup event listeners
-    setupEventListeners() {
-        // Search button
-        document.getElementById('searchBooksBtn')?.addEventListener('click', () => {
-            this.searchQuery = document.getElementById('bookSearch').value;
-            this.currentPage = 1;
-            this.loadBooks();
-        });
-
-        // Clear filters
-        document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
-            this.searchQuery = '';
-            document.getElementById('bookSearch').value = '';
-            document.getElementById('categoryFilter').value = '';
-            this.currentPage = 1;
-            this.loadBooks();
-        });
-
-        // Enter key in search
-        document.getElementById('bookSearch')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                this.searchQuery = e.target.value;
-                this.currentPage = 1;
-                this.loadBooks();
-            }
-        });
-
-        // Category filter change
-        document.getElementById('categoryFilter')?.addEventListener('change', () => {
-            this.currentPage = 1;
-            this.loadBooks();
-        });
-
-        // Add book button
-        document.getElementById('addBookBtn')?.addEventListener('click', () => {
-            this.showAddBookModal();
-        });
-
-        // Export books button
-        document.getElementById('exportBooksBtn')?.addEventListener('click', () => {
-            this.exportBooksToExcel();
-        });
-
-        // Print books button
-        document.getElementById('printBooksBtn')?.addEventListener('click', () => {
-            this.printBooksList();
-        });
-    }
-
-    // Setup table event listeners
-    setupTableEventListeners() {
-        // View book details
-        document.querySelectorAll('.view-book-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const bookId = e.currentTarget.dataset.id;
-                this.viewBookDetails(bookId);
-            });
-        });
-
-        // Edit book
-        document.querySelectorAll('.edit-book-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const bookId = e.currentTarget.dataset.id;
-                this.showEditBookModal(bookId);
-            });
-        });
-
-        // Delete book
-        document.querySelectorAll('.delete-book-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const bookId = e.currentTarget.dataset.id;
-                this.showDeleteConfirmation(bookId);
-            });
-        });
-
-        // Issue book
-        document.querySelectorAll('.issue-book-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const bookId = e.currentTarget.dataset.id;
-                if (typeof showIssueBookModal === 'function') {
-                    showIssueBookModal(null, bookId);
-                } else {
-                    this.showIssueBookModal(bookId);
-                }
-            });
-        });
-    }
-
-    // Pagination methods
-    previousPage() {
-        if (this.currentPage > 1) {
-            this.currentPage--;
-            this.loadBooks();
-        }
-    }
-
-    nextPage() {
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.loadBooks();
-        }
-    }
-
-    goToPage(page) {
-        if (page >= 1 && page <= this.totalPages) {
-            this.currentPage = page;
-            this.loadBooks();
-        }
-    }
-
-    // Show add book modal - FIXED
+    // Show add book modal with custom dropdown
     showAddBookModal() {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
@@ -662,19 +1112,78 @@ class BooksManager {
                             </div>
                         </div>
                         
+                        <!-- Custom Category Dropdown -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-                            <select id="bookCategory" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="General">General</option>
-                                <option value="Fiction">Fiction</option>
-                                <option value="Non-Fiction">Non-Fiction</option>
-                                <option value="Science">Science</option>
-                                <option value="Technology">Technology</option>
-                                <option value="Literature">Literature</option>
-                                <option value="History">History</option>
-                                <option value="Biography">Biography</option>
-                                <option value="Educational">Educational</option>
-                            </select>
+                            <div class="relative">
+                                <button 
+                                    type="button"
+                                    id="addBookCategoryTrigger"
+                                    class="custom-dropdown-trigger w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white text-left flex items-center justify-between transition-all duration-200 hover:border-slate-400"
+                                >
+                                    <span id="addBookCategoryValue">General</span>
+                                    <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                                </button>
+                                
+                                <div 
+                                    id="addBookCategoryDropdown"
+                                    class="custom-dropdown-menu hidden absolute z-50 w-full bg-white rounded-lg shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300 transform origin-top scale-y-0 opacity-0 max-h-0"
+                                >
+                                    <div class="p-3 border-b border-slate-100">
+                                        <div class="relative">
+                                            <input 
+                                                type="text" 
+                                                class="dropdown-search w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                                placeholder="Search category..."
+                                            >
+                                            <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-sm"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="overflow-y-auto max-h-60">
+                                        <div class="py-1">
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="General">
+                                                <span>General</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Fiction">
+                                                <span>Fiction</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Non-Fiction">
+                                                <span>Non-Fiction</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Science">
+                                                <span>Science</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Technology">
+                                                <span>Technology</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Literature">
+                                                <span>Literature</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="History">
+                                                <span>History</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Biography">
+                                                <span>Biography</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                            <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Educational">
+                                                <span>Educational</span>
+                                                <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <input type="hidden" id="bookCategory" name="category" value="General">
+                            </div>
                         </div>
                         
                         <div class="grid grid-cols-2 gap-4">
@@ -709,14 +1218,25 @@ class BooksManager {
 
         document.body.appendChild(modal);
 
-        // Handle form submission
+        // Initialize custom dropdown for add book modal
+        setTimeout(() => {
+            if (document.getElementById('addBookCategoryTrigger')) {
+                this.initializeCustomDropdown(
+                    'addBookCategoryTrigger',
+                    'addBookCategoryDropdown',
+                    'bookCategory',
+                    'addBookCategoryValue'
+                );
+            }
+        }, 10);
+
         modal.querySelector('#addBookForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             await this.addBook();
         });
     }
 
-    // Add new book - FIXED
+    // Add new book
     async addBook() {
         const submitBtn = document.getElementById('submitAddBookBtn');
         const originalText = submitBtn.innerHTML;
@@ -735,7 +1255,6 @@ class BooksManager {
                 quantity: parseInt(document.getElementById('bookQuantity').value)
             };
 
-            // Validation
             if (!formData.title || !formData.author) {
                 this.showError('Title and Author are required');
                 return;
@@ -756,15 +1275,12 @@ class BooksManager {
                 return;
             }
 
-            console.log('Adding book:', formData);
-
             const response = await this.fetch(this.baseURL, {
                 method: 'POST',
                 body: JSON.stringify(formData)
             });
 
             const data = await response.json();
-            console.log('Add book response:', data);
 
             if (!response.ok || !data.success) {
                 throw new Error(data.message || 'Failed to add book');
@@ -772,10 +1288,8 @@ class BooksManager {
 
             this.showSuccess('Book added successfully!');
             
-            // Close modal
             document.querySelector('.fixed.bg-black')?.remove();
             
-            // Reset to first page and refresh books list
             this.currentPage = 1;
             await this.loadBooks();
             
@@ -788,7 +1302,259 @@ class BooksManager {
         }
     }
 
-    // View book details - FIXED
+    // Show edit book modal with custom dropdown
+    async showEditBookModal(bookId) {
+        try {
+            const response = await this.fetch(`${this.baseURL}/${bookId}`);
+            const data = await response.json();
+            
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to load book details');
+            }
+
+            const book = data.book;
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full animate-fade-in">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-slate-800">Edit Book</h3>
+                            <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        
+                        <form id="editBookForm" class="space-y-4">
+                            <input type="hidden" id="editBookId" value="${book._id}">
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Title *</label>
+                                <input type="text" id="editBookTitle" required value="${book.title || ''}"
+                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Author *</label>
+                                <input type="text" id="editBookAuthor" required value="${book.author || ''}"
+                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">ISBN</label>
+                                    <input type="text" id="editBookIsbn" value="${book.isbn || ''}"
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Year *</label>
+                                    <input type="number" id="editBookYear" required min="1000" max="${new Date().getFullYear()}" value="${book.publicationYear || new Date().getFullYear()}"
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                </div>
+                            </div>
+                            
+                            <!-- Custom Category Dropdown for Edit Book -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+                                <div class="relative">
+                                    <button 
+                                        type="button"
+                                        id="editBookCategoryTrigger"
+                                        class="custom-dropdown-trigger w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white text-left flex items-center justify-between transition-all duration-200 hover:border-slate-400"
+                                    >
+                                        <span id="editBookCategoryValue">${book.category || 'General'}</span>
+                                        <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                                    </button>
+                                    
+                                    <div 
+                                        id="editBookCategoryDropdown"
+                                        class="custom-dropdown-menu hidden absolute z-50 w-full bg-white rounded-lg shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300 transform origin-top scale-y-0 opacity-0 max-h-0"
+                                    >
+                                        <div class="p-3 border-b border-slate-100">
+                                            <div class="relative">
+                                                <input 
+                                                    type="text" 
+                                                    class="dropdown-search w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                                    placeholder="Search category..."
+                                                >
+                                                <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-sm"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="overflow-y-auto max-h-60">
+                                            <div class="py-1">
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="General">
+                                                    <span>General</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Fiction">
+                                                    <span>Fiction</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Non-Fiction">
+                                                    <span>Non-Fiction</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Science">
+                                                    <span>Science</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Technology">
+                                                    <span>Technology</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Literature">
+                                                    <span>Literature</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="History">
+                                                    <span>History</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Biography">
+                                                    <span>Biography</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                                <div class="dropdown-option px-4 py-3 hover:bg-purple-50 cursor-pointer transition-colors duration-150 flex items-center justify-between" data-value="Educational">
+                                                    <span>Educational</span>
+                                                    <i class="fas fa-check text-purple-600 opacity-0"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <input type="hidden" id="editBookCategory" name="category" value="${book.category || 'General'}">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Price (₹) *</label>
+                                    <input type="number" id="editBookPrice" required min="0" step="0.01" value="${book.price || 0}"
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Quantity *</label>
+                                    <input type="number" id="editBookQuantity" required min="${book.availableQuantity || 0}" value="${book.quantity || 0}"
+                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <p class="text-xs text-slate-500 mt-1">Minimum: ${book.availableQuantity || 0} (currently available)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-3 pt-4">
+                                <button type="button" onclick="this.closest('.fixed').remove()"
+                                    class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition duration-200">
+                                    Cancel
+                                </button>
+                                <button type="submit" id="submitEditBookBtn"
+                                    class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition duration-200">
+                                    Update Book
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Initialize custom dropdown for edit book modal
+            setTimeout(() => {
+                if (document.getElementById('editBookCategoryTrigger')) {
+                    this.initializeCustomDropdown(
+                        'editBookCategoryTrigger',
+                        'editBookCategoryDropdown',
+                        'editBookCategory',
+                        'editBookCategoryValue'
+                    );
+                    
+                    // Mark the current category as selected
+                    const dropdown = document.getElementById('editBookCategoryDropdown');
+                    if (dropdown) {
+                        dropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                            opt.querySelector('i').style.opacity = '0';
+                            if (opt.dataset.value === (book.category || 'General')) {
+                                opt.classList.add('selected');
+                                opt.querySelector('i').style.opacity = '1';
+                            }
+                        });
+                    }
+                }
+            }, 10);
+
+            modal.querySelector('#editBookForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.updateBook(book._id);
+            });
+            
+        } catch (error) {
+            console.error('Error loading edit book modal:', error);
+            this.showError('Failed to load book details. Please try again.');
+        }
+    }
+
+    // Update book
+    async updateBook(bookId) {
+        const submitBtn = document.getElementById('submitEditBookBtn');
+        const originalText = submitBtn.innerHTML;
+        
+        try {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            submitBtn.disabled = true;
+
+            const formData = {
+                title: document.getElementById('editBookTitle').value.trim(),
+                author: document.getElementById('editBookAuthor').value.trim(),
+                isbn: document.getElementById('editBookIsbn').value.trim(),
+                publicationYear: parseInt(document.getElementById('editBookYear').value),
+                category: document.getElementById('editBookCategory').value,
+                price: parseFloat(document.getElementById('editBookPrice').value),
+                quantity: parseInt(document.getElementById('editBookQuantity').value)
+            };
+
+            if (!formData.title || !formData.author) {
+                this.showError('Title and Author are required');
+                return;
+            }
+
+            if (formData.publicationYear > new Date().getFullYear()) {
+                this.showError('Publication year cannot be in the future');
+                return;
+            }
+
+            if (formData.price < 0) {
+                this.showError('Price cannot be negative');
+                return;
+            }
+
+            const response = await this.fetch(`${this.baseURL}/${bookId}`, {
+                method: 'PUT',
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to update book');
+            }
+
+            this.showSuccess('Book updated successfully!');
+            
+            document.querySelector('.fixed.bg-black')?.remove();
+            this.loadBooks();
+            
+        } catch (error) {
+            console.error('Error updating book:', error);
+            this.showError(error.message || 'Failed to update book. Please try again.');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+    // View book details
     async viewBookDetails(bookId) {
         try {
             const response = await this.fetch(`${this.baseURL}/${bookId}`);
@@ -807,7 +1573,7 @@ class BooksManager {
         }
     }
 
-    // Show book details modal - FIXED
+    // Show book details modal
     showBookDetailsModal() {
         if (!this.selectedBook) return;
 
@@ -916,183 +1682,7 @@ class BooksManager {
         document.body.appendChild(modal);
     }
 
-    // Show edit book modal - FIXED
-    async showEditBookModal(bookId) {
-        try {
-            const response = await this.fetch(`${this.baseURL}/${bookId}`);
-            const data = await response.json();
-            
-            if (!response.ok || !data.success) {
-                throw new Error(data.message || 'Failed to load book details');
-            }
-
-            const book = data.book;
-            
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
-            modal.innerHTML = `
-                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full animate-fade-in">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-xl font-bold text-slate-800">Edit Book</h3>
-                            <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-slate-600">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
-                        </div>
-                        
-                        <form id="editBookForm" class="space-y-4">
-                            <input type="hidden" id="editBookId" value="${book._id}">
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Title *</label>
-                                <input type="text" id="editBookTitle" required value="${book.title || ''}"
-                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Author *</label>
-                                <input type="text" id="editBookAuthor" required value="${book.author || ''}"
-                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-2">ISBN</label>
-                                    <input type="text" id="editBookIsbn" value="${book.isbn || ''}"
-                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-2">Year *</label>
-                                    <input type="number" id="editBookYear" required min="1000" max="${new Date().getFullYear()}" value="${book.publicationYear || new Date().getFullYear()}"
-                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-                                <select id="editBookCategory" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <option value="General" ${book.category === 'General' ? 'selected' : ''}>General</option>
-                                    <option value="Fiction" ${book.category === 'Fiction' ? 'selected' : ''}>Fiction</option>
-                                    <option value="Non-Fiction" ${book.category === 'Non-Fiction' ? 'selected' : ''}>Non-Fiction</option>
-                                    <option value="Science" ${book.category === 'Science' ? 'selected' : ''}>Science</option>
-                                    <option value="Technology" ${book.category === 'Technology' ? 'selected' : ''}>Technology</option>
-                                    <option value="Literature" ${book.category === 'Literature' ? 'selected' : ''}>Literature</option>
-                                    <option value="History" ${book.category === 'History' ? 'selected' : ''}>History</option>
-                                    <option value="Biography" ${book.category === 'Biography' ? 'selected' : ''}>Biography</option>
-                                    <option value="Educational" ${book.category === 'Educational' ? 'selected' : ''}>Educational</option>
-                                </select>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-2">Price (₹) *</label>
-                                    <input type="number" id="editBookPrice" required min="0" step="0.01" value="${book.price || 0}"
-                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-2">Quantity *</label>
-                                    <input type="number" id="editBookQuantity" required min="${book.availableQuantity || 0}" value="${book.quantity || 0}"
-                                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <p class="text-xs text-slate-500 mt-1">Minimum: ${book.availableQuantity || 0} (currently available)</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex space-x-3 pt-4">
-                                <button type="button" onclick="this.closest('.fixed').remove()"
-                                    class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition duration-200">
-                                    Cancel
-                                </button>
-                                <button type="submit" id="submitEditBookBtn"
-                                    class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition duration-200">
-                                    Update Book
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-
-            // Handle form submission
-            modal.querySelector('#editBookForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                await this.updateBook(book._id);
-            });
-            
-        } catch (error) {
-            console.error('Error loading edit book modal:', error);
-            this.showError('Failed to load book details. Please try again.');
-        }
-    }
-
-    // Update book - FIXED
-    async updateBook(bookId) {
-        const submitBtn = document.getElementById('submitEditBookBtn');
-        const originalText = submitBtn.innerHTML;
-        
-        try {
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
-            submitBtn.disabled = true;
-
-            const formData = {
-                title: document.getElementById('editBookTitle').value.trim(),
-                author: document.getElementById('editBookAuthor').value.trim(),
-                isbn: document.getElementById('editBookIsbn').value.trim(),
-                publicationYear: parseInt(document.getElementById('editBookYear').value),
-                category: document.getElementById('editBookCategory').value,
-                price: parseFloat(document.getElementById('editBookPrice').value),
-                quantity: parseInt(document.getElementById('editBookQuantity').value)
-            };
-
-            // Validation
-            if (!formData.title || !formData.author) {
-                this.showError('Title and Author are required');
-                return;
-            }
-
-            if (formData.publicationYear > new Date().getFullYear()) {
-                this.showError('Publication year cannot be in the future');
-                return;
-            }
-
-            if (formData.price < 0) {
-                this.showError('Price cannot be negative');
-                return;
-            }
-
-            console.log('Updating book:', bookId, formData);
-
-            const response = await this.fetch(`${this.baseURL}/${bookId}`, {
-                method: 'PUT',
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-            console.log('Update book response:', data);
-
-            if (!response.ok || !data.success) {
-                throw new Error(data.message || 'Failed to update book');
-            }
-
-            this.showSuccess('Book updated successfully!');
-            
-            // Close modal
-            document.querySelector('.fixed.bg-black')?.remove();
-            
-            // Refresh books list
-            this.loadBooks();
-            
-        } catch (error) {
-            console.error('Error updating book:', error);
-            this.showError(error.message || 'Failed to update book. Please try again.');
-        } finally {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
-    }
-
-    // Show delete confirmation - FIXED
+    // Show delete confirmation
     showDeleteConfirmation(bookId) {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
@@ -1124,14 +1714,13 @@ class BooksManager {
 
         document.body.appendChild(modal);
 
-        // Handle delete confirmation
         modal.querySelector('#confirmDeleteBtn').addEventListener('click', async (e) => {
             const bookId = e.currentTarget.dataset.id;
             await this.deleteBook(bookId);
         });
     }
 
-    // Delete book - FIXED
+    // Delete book
     async deleteBook(bookId) {
         const deleteBtn = document.getElementById('confirmDeleteBtn');
         const originalText = deleteBtn.innerHTML;
@@ -1140,14 +1729,11 @@ class BooksManager {
             deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
             deleteBtn.disabled = true;
 
-            console.log('Deleting book:', bookId);
-
             const response = await this.fetch(`${this.baseURL}/${bookId}`, {
                 method: 'DELETE'
             });
 
             const data = await response.json();
-            console.log('Delete book response:', data);
 
             if (!response.ok || !data.success) {
                 throw new Error(data.message || 'Failed to delete book');
@@ -1155,10 +1741,7 @@ class BooksManager {
 
             this.showSuccess('Book deleted successfully!');
             
-            // Close modal
             document.querySelector('.fixed.bg-black')?.remove();
-            
-            // Refresh books list
             this.loadBooks();
             
         } catch (error) {
@@ -1170,23 +1753,302 @@ class BooksManager {
         }
     }
 
-    // Show issue book modal - NEW
+    // Pagination methods
+    previousPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+            this.loadBooks();
+        }
+    }
+
+    nextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+            this.loadBooks();
+        }
+    }
+
+    goToPage(page) {
+        if (page >= 1 && page <= this.totalPages) {
+            this.currentPage = page;
+            this.loadBooks();
+        }
+    }
+
+    // Clone book
+    async cloneBook(bookId) {
+        try {
+            const response = await this.fetch(`${this.baseURL}/${bookId}`);
+            const data = await response.json();
+            
+            if (!response.ok || !data.success) {
+                throw new Error('Failed to get book details');
+            }
+            
+            const originalBook = data.book;
+            this.showCloneBookModal(originalBook);
+            
+        } catch (error) {
+            console.error('Error cloning book:', error);
+            this.showError('Failed to clone book. Please try again.');
+        }
+    }
+
+    // Show clone book modal
+    showCloneBookModal(originalBook) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+        modal.innerHTML = `
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full animate-fade-in">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-copy text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">Clone Book</h3>
+                                <p class="text-slate-600">Create a copy with new ID</p>
+                            </div>
+                        </div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-slate-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <p class="text-sm text-yellow-800">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            This will create a new book with the same details but a new unique Book ID.
+                            The original book (ID: ${originalBook.bookId || 'N/A'}) will remain unchanged.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 bg-slate-50 rounded-lg">
+                                <p class="text-xs text-slate-500">Original Title</p>
+                                <p class="font-medium text-slate-800 truncate">${originalBook.title || 'Untitled'}</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-lg">
+                                <p class="text-xs text-slate-500">Original Author</p>
+                                <p class="font-medium text-slate-800 truncate">${originalBook.author || 'Unknown'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 bg-slate-50 rounded-lg">
+                                <p class="text-xs text-slate-500">Original Category</p>
+                                <p class="font-medium text-slate-800">${originalBook.category || 'General'}</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-lg">
+                                <p class="text-xs text-slate-500">Original Price</p>
+                                <p class="font-medium text-slate-800">₹${(originalBook.price || 0).toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 mt-6">
+                        <button type="button" onclick="this.closest('.fixed').remove()"
+                            class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition duration-200">
+                            Cancel
+                        </button>
+                        <button id="confirmCloneBtn"
+                            class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg hover:opacity-90 transition duration-200">
+                            Clone Book
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal.querySelector('#confirmCloneBtn').addEventListener('click', async () => {
+            await this.createClone(originalBook);
+            modal.remove();
+        });
+    }
+
+    // Create clone of book
+    async createClone(originalBook) {
+        try {
+            const submitBtn = document.querySelector('#confirmCloneBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cloning...';
+            submitBtn.disabled = true;
+
+            const newBook = {
+                title: `${originalBook.title} (Copy)`,
+                author: originalBook.author,
+                isbn: originalBook.isbn || '',
+                publicationYear: originalBook.publicationYear,
+                category: originalBook.category,
+                price: originalBook.price,
+                quantity: originalBook.quantity,
+                availableQuantity: originalBook.quantity
+            };
+
+            const response = await this.fetch(this.baseURL, {
+                method: 'POST',
+                body: JSON.stringify(newBook)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to clone book');
+            }
+
+            this.showSuccess('Book cloned successfully! New ID: ' + (data.book?.bookId || 'Generated'));
+            this.loadBooks();
+            
+        } catch (error) {
+            console.error('Error creating clone:', error);
+            this.showError(error.message || 'Failed to clone book. Please try again.');
+        }
+    }
+
+    // Generate book report
+    async generateBookReport(bookId) {
+        try {
+            const response = await this.fetch(`${this.baseURL}/${bookId}`);
+            const data = await response.json();
+            
+            if (!response.ok || !data.success) {
+                throw new Error('Failed to get book details');
+            }
+            
+            const book = data.book;
+            this.showBookReportModal(book);
+            
+        } catch (error) {
+            console.error('Error generating report:', error);
+            this.showError('Failed to generate report. Please try again.');
+        }
+    }
+
+    // Show book report modal
+    showBookReportModal(book) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+        modal.innerHTML = `
+            <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-fade-in">
+                <div class="p-6 overflow-y-auto max-h-[85vh]">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chart-bar text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">Book Report</h3>
+                                <p class="text-slate-600">${book.title || 'Untitled'}</p>
+                            </div>
+                        </div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-slate-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-slate-50 rounded-xl p-5">
+                            <h4 class="font-semibold text-slate-800 mb-4">Inventory Status</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">Total Quantity</span>
+                                    <span class="font-semibold text-slate-800">${book.quantity || 0}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">Available</span>
+                                    <span class="font-semibold ${book.availableQuantity > 0 ? 'text-green-600' : 'text-red-600'}">
+                                        ${book.availableQuantity || 0}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">Issued</span>
+                                    <span class="font-semibold text-blue-600">
+                                        ${(book.quantity || 0) - (book.availableQuantity || 0)}
+                                    </span>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-600">Availability Rate</span>
+                                        <span class="font-semibold ${(book.availableQuantity / book.quantity * 100) > 50 ? 'text-green-600' : 'text-yellow-600'}">
+                                            ${book.quantity > 0 ? ((book.availableQuantity / book.quantity * 100).toFixed(1)) : 0}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-slate-50 rounded-xl p-5">
+                            <h4 class="font-semibold text-slate-800 mb-4">Financial Summary</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">Unit Price</span>
+                                    <span class="font-semibold text-slate-800">₹${(book.price || 0).toFixed(2)}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">Total Value</span>
+                                    <span class="font-semibold text-slate-800">
+                                        ₹${((book.price || 0) * (book.quantity || 0)).toFixed(2)}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">Available Value</span>
+                                    <span class="font-semibold text-slate-800">
+                                        ₹${((book.price || 0) * (book.availableQuantity || 0)).toFixed(2)}
+                                    </span>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-600">Issued Value</span>
+                                        <span class="font-semibold text-slate-800">
+                                            ₹${((book.price || 0) * ((book.quantity || 0) - (book.availableQuantity || 0))).toFixed(2)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 mt-6">
+                        <button onclick="window.print()"
+                            class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition duration-200 flex items-center justify-center space-x-2">
+                            <i class="fas fa-print"></i>
+                            <span>Print Report</span>
+                        </button>
+                        <button onclick="booksManager.exportBookReport('${book._id}')"
+                            class="flex-1 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg hover:opacity-90 transition duration-200 flex items-center justify-center space-x-2">
+                            <i class="fas fa-download"></i>
+                            <span>Export PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+    }
+
+    // Show issue book modal
     showIssueBookModal(bookId) {
-        // This should call your existing issue book modal function
-        // or create one if it doesn't exist
         this.showError('Issue book functionality needs to be implemented');
     }
 
-    // Export books to Excel - FIXED
+    // Export book report
+    exportBookReport(bookId) {
+        this.showSuccess('Report export functionality will be implemented');
+    }
+
+    // Export books to Excel
     async exportBooksToExcel() {
         try {
-            // Show loading
             const exportBtn = document.getElementById('exportBooksBtn');
             const originalText = exportBtn.innerHTML;
             exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
             exportBtn.disabled = true;
 
-            // Get all books
             const response = await this.fetch(`${this.baseURL}?limit=1000`);
             const data = await response.json();
             
@@ -1194,7 +2056,6 @@ class BooksManager {
                 throw new Error('Failed to fetch books for export');
             }
 
-            // Generate CSV content
             let csvContent = 'Book ID,Title,Author,ISBN,Category,Year,Price,Quantity,Available,Status\n';
             
             data.books.forEach(book => {
@@ -1214,7 +2075,6 @@ class BooksManager {
                 csvContent += row.join(',') + '\n';
             });
 
-            // Create blob and download
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
@@ -1233,7 +2093,6 @@ class BooksManager {
             console.error('Error exporting books:', error);
             this.showError('Failed to export books. Please try again.');
         } finally {
-            // Restore button state
             const exportBtn = document.getElementById('exportBooksBtn');
             if (exportBtn) {
                 exportBtn.innerHTML = originalText;
@@ -1242,7 +2101,7 @@ class BooksManager {
         }
     }
 
-    // Print books list - FIXED
+    // Print books list
     printBooksList() {
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
@@ -1293,7 +2152,6 @@ class BooksManager {
                     </tbody>
                 </table>
                 <script>
-                    // Load books data
                     fetch('http://localhost:5000/api/books?limit=1000', {
                         headers: {
                             'Authorization': 'Bearer ${localStorage.getItem('token') || ''}'
@@ -1337,7 +2195,7 @@ class BooksManager {
                                     <td colspan="9" style="text-align: center; color: #ef4444;">
                                         Failed to load books data
                                     </td>
-                                </tr>
+                                \`;
                             \`;
                         });
                 </script>

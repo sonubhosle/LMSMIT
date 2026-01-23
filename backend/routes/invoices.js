@@ -161,8 +161,7 @@ router.get('/stats/summary', async (req, res) => {
     }
 });
 
-// Create invoice - FIXED
-// Create invoice - FIXED VERSION
+// Create new invoice
 router.post('/', async (req, res) => {
     try {
         const { studentId, invoiceType, daysLate, bookPrice, totalAmount, remarks, bookId } = req.body;
@@ -276,6 +275,7 @@ router.post('/', async (req, res) => {
         });
     }
 });
+
 // Update invoice status
 router.put('/:id/status', async (req, res) => {
     try {
@@ -315,6 +315,49 @@ router.put('/:id/status', async (req, res) => {
 
     } catch (error) {
         console.error('Error updating invoice status:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Server error'
+        });
+    }
+});
+
+// Delete invoice
+router.delete('/:id', async (req, res) => {
+    try {
+        const invoice = await Invoice.findById(req.params.id);
+        
+        if (!invoice) {
+            return res.status(404).json({
+                success: false,
+                message: 'Invoice not found'
+            });
+        }
+
+        // Optional: Add business logic checks before deletion
+        // For example, prevent deletion of paid invoices
+        if (invoice.status === 'paid') {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot delete a paid invoice'
+            });
+        }
+
+        // If it's a lost_book invoice, update the book status back to available
+        if (invoice.invoiceType === 'lost_book' && invoice.book) {
+            await Book.findByIdAndUpdate(invoice.book, { status: 'available' });
+        }
+
+        // Delete the invoice
+        await Invoice.findByIdAndDelete(req.params.id);
+
+        res.json({
+            success: true,
+            message: 'Invoice deleted successfully'
+        });
+
+    } catch (error) {
+        console.error('Error deleting invoice:', error);
         res.status(500).json({
             success: false,
             message: error.message || 'Server error'
